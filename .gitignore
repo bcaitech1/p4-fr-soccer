@@ -1,0 +1,8 @@
+# no __pycache__ folder
+__pycache__/
+
+# no .ipynb_checkpoints
+.ipynb_checkpoints/
+
+# no .idea folder
+.idea/
