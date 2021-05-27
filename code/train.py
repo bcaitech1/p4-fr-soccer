@@ -26,6 +26,7 @@ from dataset import dataset_loader, START, PAD,load_vocab
 from scheduler import CircularLRBeta
 
 from metrics import word_error_rate,sentence_acc
+import wandb
 
 def id_to_string(tokens, data_loader,do_eval=0):
     result = []
@@ -164,6 +165,9 @@ def main(config_file):
     Train math formula recognition model
     """
     options = Flags(config_file).get()
+    with open(config_file) as file:
+        yml = yaml.safe_load(file)
+    wandb.config.update(yml)
 
     #set random seed
     torch.manual_seed(options.seed)
@@ -305,6 +309,7 @@ def main(config_file):
     grad_norms = checkpoint["grad_norm"]
 
     # Train
+    wandb.watch(model)
     for epoch in range(options.num_epochs):
         start_time = time.time()
 
@@ -329,24 +334,31 @@ def main(config_file):
             train=True,
         )
 
-
-
         train_losses.append(train_result["loss"])
+        wandb.log({"train_loss" : train_result["loss"]})
+
         grad_norms.append(train_result["grad_norm"])
         train_epoch_symbol_accuracy = (
             train_result["correct_symbols"] / train_result["total_symbols"]
         )
         train_symbol_accuracy.append(train_epoch_symbol_accuracy)
+        wandb.log({"train_symbol_accuracy": train_epoch_symbol_accuracy})
+
         train_epoch_sentence_accuracy = (
                 train_result["sent_acc"] / train_result["num_sent_acc"]
         )
-
         train_sentence_accuracy.append(train_epoch_sentence_accuracy)
+        wandb.log({"train_sentence_accuracy" : train_epoch_sentence_accuracy})
+
         train_epoch_wer = (
                 train_result["wer"] / train_result["num_wer"]
         )
         train_wer.append(train_epoch_wer)
+        wandb.log({"train_wer": train_epoch_wer})
+        wandb.log({"train_score": 0.9*train_epoch_sentence_accuracy+0.1*(1-train_epoch_wer)})
+
         epoch_lr = lr_scheduler.get_lr()  # cycle
+        wandb.log({"train_epoch_lr": epoch_lr})
 
         # Validation
         validation_result = run_epoch(
@@ -362,19 +374,26 @@ def main(config_file):
             train=False,
         )
         validation_losses.append(validation_result["loss"])
+        wandb.log({"val_loss": validation_result["loss"]})
+
         validation_epoch_symbol_accuracy = (
             validation_result["correct_symbols"] / validation_result["total_symbols"]
         )
         validation_symbol_accuracy.append(validation_epoch_symbol_accuracy)
+        wandb.log({"val_symbol_accuracy": validation_epoch_symbol_accuracy})
 
         validation_epoch_sentence_accuracy = (
             validation_result["sent_acc"] / validation_result["num_sent_acc"]
         )
         validation_sentence_accuracy.append(validation_epoch_sentence_accuracy)
+        wandb.log({"val_sentence_accuracy": validation_epoch_sentence_accuracy})
+
         validation_epoch_wer = (
-                validation_result["wer"] / validation_result["num_wer"]
+            validation_result["wer"] / validation_result["num_wer"]
         )
         validation_wer.append(validation_epoch_wer)
+        wandb.log({"val_wer": validation_epoch_wer})
+        wandb.log({"val_score": 0.9*validation_epoch_sentence_accuracy+0.1*(1-validation_epoch_wer)})
 
         # Save checkpoint
         #make config
@@ -461,4 +480,6 @@ if __name__ == "__main__":
         help="Path of configuration file",
     )
     parser = parser.parse_args()
+    wandb.init(project='OCR', entity='stage-4-soccer')
+    wandb.run.name = RUN_NAME   #수정하시면 됩니다. ex)"test_run"
     main(parser.config_file)
