@@ -6,3 +6,12 @@ __pycache__/
 
 # no .idea folder
 .idea/
+
+# no log foder
+code/log
+
+# submit
+code/submit
+
+# no wandb
+code/wandb

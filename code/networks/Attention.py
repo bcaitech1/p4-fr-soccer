@@ -89,9 +89,9 @@ class LSTMEncoder(nn.Module):
         )
 
         x, hidden = self.rnn(x, hidden)
-        half_1 = x[:, :, :self.src_dim]
-        half_2 = x[:, :, self.src_dim:]
-        x = half_1 + half_2
+        # half_1 = x[:, :, :self.src_dim]
+        # half_2 = x[:, :, self.src_dim:]
+        # x = half_1 + half_2
 
         return x
 
@@ -180,7 +180,7 @@ class AttentionDecoder(nn.Module):
 
         self.embedding = nn.Embedding(num_classes + 1, embedding_dim)
         self.attention_cell = AttentionCell(
-            src_dim, hidden_dim, embedding_dim, num_layers, cell_type
+            src_dim * 2, hidden_dim, embedding_dim, num_layers, cell_type
         )
         self.hidden_dim = hidden_dim
         self.num_classes = num_classes
@@ -271,7 +271,7 @@ class Attention(nn.Module):
         super(Attention, self).__init__()
 
         self.encoder = CNN(FLAGS.data.rgb)
-
+        self.LSTMEncoder = LSTMEncoder(FLAGS.Attention.src_dim, FLAGS.Attention.layer_num)
         self.decoder = AttentionDecoder(
             num_classes=len(train_dataset.id_to_token),
             src_dim=FLAGS.Attention.src_dim,
