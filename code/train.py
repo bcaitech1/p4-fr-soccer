@@ -394,7 +394,7 @@ def main(config_file):
                    "val_sentence_accuracy": validation_epoch_sentence_accuracy,
                    "val_wer": validation_epoch_wer,
                    "val_score": 0.9 * validation_epoch_sentence_accuracy + 0.1 * (1 - validation_epoch_wer)},
-                  step=epoch)
+                  )
 
         # Save checkpoint
         # make config
