@@ -45,20 +45,56 @@ class CNN(nn.Module):
         self.conv5 = convRelu(5)
         self.pooling5 = nn.MaxPool2d((2, 2), (2, 1), (0, 1))
         self.conv6 = convRelu(6, True)
-    
+
     def forward(self, input):
-        out = self.conv0(input)     # [batch size, 64, 128, 128]
-        out = self.pooling0(out)    # [batch size, 64, 64, 64]
-        out = self.conv1(out)       # [batch size, 128, 64, 64]
-        out = self.pooling1(out)    # [batch size, 128, 32, 32]
-        out = self.conv2(out)       # [batch size, 256, 32, 32]
-        out = self.conv3(out)       # [batch size, 256, 32, 32]
-        out = self.pooling3(out)    # [batch size, 256, 16, 33]
-        out = self.conv4(out)       # [batch size, 512, 16, 33]
-        out = self.conv5(out)       # [batch size, 512, 16, 33]
-        out = self.pooling5(out)    # [batch size, 512, 8, 34]
-        out = self.conv6(out)       # [batch size, 512, 7, 33]
+        out = self.conv0(input)  # [batch size, 64, 128, 128]
+        out = self.pooling0(out)  # [batch size, 64, 64, 64]
+        out = self.conv1(out)  # [batch size, 128, 64, 64]
+        out = self.pooling1(out)  # [batch size, 128, 32, 32]
+        out = self.conv2(out)  # [batch size, 256, 32, 32]
+        out = self.conv3(out)  # [batch size, 256, 32, 32]
+        out = self.pooling3(out)  # [batch size, 256, 16, 33]
+        out = self.conv4(out)  # [batch size, 512, 16, 33]
+        out = self.conv5(out)  # [batch size, 512, 16, 33]
+        out = self.pooling5(out)  # [batch size, 512, 8, 34]
+        out = self.conv6(out)  # [batch size, 512, 7, 33]
         return out
+
+
+class LSTMEncoder(nn.Module):
+    def __init__(self, src_dim, num_layer=1):
+        super(LSTMEncoder, self).__init__()
+        self.num_layer = num_layer
+        self.src_dim = src_dim
+
+        if num_layer == 1:
+            self.rnn = nn.LSTM(num_layers=1,
+                               input_size=src_dim,
+                               hidden_size=src_dim,
+                               batch_first=True,
+                               bidirectional=True)
+        else:
+            self.rnn = nn.LSTM(num_layers=self.num_layer,
+                               input_size=src_dim,
+                               hidden_size=src_dim,
+                               batch_first=True,
+                               bidirectional=True)
+
+    def forward(self, x):
+        batch_size = x.size()[0]
+
+        hidden = (
+            torch.FloatTensor(self.num_layer * 2, batch_size, self.src_dim).fill_(0).to(device),
+            torch.FloatTensor(self.num_layer * 2, batch_size, self.src_dim).fill_(0).to(device),
+        )
+
+        x, hidden = self.rnn(x, hidden)
+        half_1 = x[:, :, :self.src_dim]
+        half_2 = x[:, :, self.src_dim:]
+        x = half_1 + half_2
+
+        return x
+
 
 class AttentionCell(nn.Module):
     def __init__(self, src_dim, hidden_dim, embedding_dim, num_layers=1, cell_type='LSTM'):
@@ -99,14 +135,14 @@ class AttentionCell(nn.Module):
 
         self.hidden_dim = hidden_dim
 
-    def forward(self, prev_hidden, src, tgt):   # src: [b, L, c]
+    def forward(self, prev_hidden, src, tgt):  # src: [b, L, c]
         src_features = self.i2h(src)  # [b, L, h]
         if self.num_layers == 1:
-            prev_hidden_proj = self.h2h(prev_hidden[0]).unsqueeze(1)    # [b, 1, h]
+            prev_hidden_proj = self.h2h(prev_hidden[0]).unsqueeze(1)  # [b, 1, h]
         else:
-            prev_hidden_proj = self.h2h(prev_hidden[-1][0]).unsqueeze(1)    # [b, 1, h]
+            prev_hidden_proj = self.h2h(prev_hidden[-1][0]).unsqueeze(1)  # [b, 1, h]
         attention_logit = self.score(
-            torch.tanh(src_features + prev_hidden_proj) # [b, L, h]
+            torch.tanh(src_features + prev_hidden_proj)  # [b, L, h]
         )  # [b, L, 1]
         alpha = F.softmax(attention_logit, dim=1)  # [b, L, 1]
         context = torch.bmm(alpha.permute(0, 2, 1), src).squeeze(1)  # [b, c]
@@ -129,16 +165,16 @@ class AttentionCell(nn.Module):
 
 class AttentionDecoder(nn.Module):
     def __init__(
-        self,
-        num_classes,
-        src_dim,
-        embedding_dim,
-        hidden_dim,
-        pad_id,
-        st_id,
-        num_layers=1,
-        cell_type='LSTM',
-        checkpoint=None,
+            self,
+            num_classes,
+            src_dim,
+            embedding_dim,
+            hidden_dim,
+            pad_id,
+            st_id,
+            num_layers=1,
+            cell_type='LSTM',
+            checkpoint=None,
     ):
         super(AttentionDecoder, self).__init__()
 
@@ -157,7 +193,7 @@ class AttentionDecoder(nn.Module):
             self.load_state_dict(checkpoint)
 
     def forward(
-        self, src, text, is_train=True, teacher_forcing_ratio=1.0, batch_max_length=50
+            self, src, text, is_train=True, teacher_forcing_ratio=1.0, batch_max_length=50
     ):
         """
         input:
@@ -170,8 +206,8 @@ class AttentionDecoder(nn.Module):
 
         output_hiddens = (
             torch.FloatTensor(batch_size, num_steps, self.hidden_dim)
-            .fill_(0)
-            .to(device)
+                .fill_(0)
+                .to(device)
         )
         if self.num_layers == 1:
             hidden = (
@@ -207,8 +243,8 @@ class AttentionDecoder(nn.Module):
             )  # [START] token
             probs = (
                 torch.FloatTensor(batch_size, num_steps, self.num_classes)
-                .fill_(0)
-                .to(device)
+                    .fill_(0)
+                    .to(device)
             )
 
             for i in range(num_steps):
@@ -227,15 +263,15 @@ class AttentionDecoder(nn.Module):
 
 class Attention(nn.Module):
     def __init__(
-        self,
-        FLAGS,
-        train_dataset,
-        checkpoint=None,
+            self,
+            FLAGS,
+            train_dataset,
+            checkpoint=None,
     ):
         super(Attention, self).__init__()
-        
+
         self.encoder = CNN(FLAGS.data.rgb)
-        
+
         self.decoder = AttentionDecoder(
             num_classes=len(train_dataset.id_to_token),
             src_dim=FLAGS.Attention.src_dim,
@@ -252,10 +288,12 @@ class Attention(nn.Module):
 
         if checkpoint:
             self.load_state_dict(checkpoint)
-    
+
     def forward(self, input, expected, is_train, teacher_forcing_ratio):
         out = self.encoder(input)
         b, c, h, w = out.size()
         out = out.view(b, c, h * w).transpose(1, 2)  # [b, h x w, c]
-        output = self.decoder(out, expected, is_train, teacher_forcing_ratio, batch_max_length=expected.size(1))    # [b, sequence length, class size]
+        out = self.LSTMEncoder(out)
+        output = self.decoder(out, expected, is_train, teacher_forcing_ratio,
+                              batch_max_length=expected.size(1))  # [b, sequence length, class size]
         return output
