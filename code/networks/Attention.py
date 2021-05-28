@@ -23,15 +23,15 @@ class CNN(nn.Module):
             cnn = nn.Sequential()
             nIn = nc if i == 0 else nm[i - 1]
             nOut = nm[i]
-            cnn.add_module('conv{0}'.format(i),
+            cnn.add_module(f'conv{i}',
                            nn.Conv2d(nIn, nOut, ks[i], ss[i], ps[i]))
             if batchNormalization:
-                cnn.add_module('batchnorm{0}'.format(i), nn.BatchNorm2d(nOut))
+                cnn.add_module(f'batchnorm{i}', nn.BatchNorm2d(nOut))
             if leakyRelu:
-                cnn.add_module('relu{0}'.format(i),
+                cnn.add_module(f'relu{i}',
                                nn.LeakyReLU(0.2, inplace=True))
             else:
-                cnn.add_module('relu{0}'.format(i), nn.ReLU(True))
+                cnn.add_module(f'relu{i}', nn.ReLU(True))
             return cnn
 
         self.conv0 = convRelu(0)
@@ -80,6 +80,8 @@ class LSTMEncoder(nn.Module):
                                batch_first=True,
                                bidirectional=True)
 
+        self.layer_norm = nn.LayerNorm(normalized_shape=src_dim * 2)
+
     def forward(self, x):
         batch_size = x.size()[0]
 
@@ -93,7 +95,7 @@ class LSTMEncoder(nn.Module):
         # half_2 = x[:, :, self.src_dim:]
         # x = half_1 + half_2
 
-        return x
+        return self.layer_norm(x)
 
 
 class AttentionCell(nn.Module):
@@ -132,7 +134,8 @@ class AttentionCell(nn.Module):
                 )
             else:
                 raise NotImplementedError
-
+        self.hidden_layer_norm = nn.LayerNorm(normalized_shape=hidden_dim)
+        self.cell_layer_norm = nn.LayerNorm(normalized_shape=hidden_dim)
         self.hidden_dim = hidden_dim
 
     def forward(self, prev_hidden, src, tgt):  # src: [b, L, c]
@@ -141,23 +144,35 @@ class AttentionCell(nn.Module):
             prev_hidden_proj = self.h2h(prev_hidden[0]).unsqueeze(1)  # [b, 1, h]
         else:
             prev_hidden_proj = self.h2h(prev_hidden[-1][0]).unsqueeze(1)  # [b, 1, h]
+        summation_with_src_hid = src_features + prev_hidden_proj
         attention_logit = self.score(
-            torch.tanh(src_features + prev_hidden_proj)  # [b, L, h]
+            torch.tanh(summation_with_src_hid)  # [b, L, h]
         )  # [b, L, 1]
         alpha = F.softmax(attention_logit, dim=1)  # [b, L, 1]
-        context = torch.bmm(alpha.permute(0, 2, 1), src).squeeze(1)  # [b, c]
+        permute_alpha = alpha.permute(0, 2, 1)
+        context = torch.bmm(permute_alpha, src).squeeze(1)  # [b, c]
 
         concat_context = torch.cat([context, tgt], 1)  # [b, c+e]
 
         if self.num_layers == 1:
             cur_hidden = self.rnn(concat_context, prev_hidden)
+            cur_hidden = [cur for cur in cur_hidden]
+            cur_hidden[0] = self.hidden_layer_norm(cur_hidden[0])
+            cur_hidden[1] = self.cell_layer_norm(cur_hidden[1])
         else:
             cur_hidden = []
             for i, layer in enumerate(self.rnn):
                 if i == 0:
                     concat_context = layer(concat_context, prev_hidden[i])
+                    concat_context = [cur for cur in concat_context]
+                    concat_context[0] = self.hidden_layer_norm(concat_context[0])
+                    concat_context[1] = self.cell_layer_norm(concat_context[1])
                 else:
                     concat_context = layer(concat_context[0], prev_hidden[i])
+                    concat_context = [cur for cur in concat_context]
+                    concat_context[0] = self.hidden_layer_norm(concat_context[0])
+                    concat_context[1] = self.hidden_layer_norm(concat_context[1])
+
                 cur_hidden.append(concat_context)
 
         return cur_hidden, alpha
@@ -223,7 +238,7 @@ class AttentionDecoder(nn.Module):
                 for _ in range(self.num_layers)
             ]
 
-        if is_train and random.random() < teacher_forcing_ratio:
+        if is_train and random.random() < teacher_forcing_ratio:  # teacher forcing
             for i in range(num_steps):
                 # one-hot vectors for a i-th char. in a batch
                 embedd = self.embedding(text[:, i])
@@ -237,7 +252,7 @@ class AttentionDecoder(nn.Module):
                     output_hiddens[:, i, :] = hidden[-1][0]
             probs = self.generator(output_hiddens)
 
-        else:
+        else:  # no teacher forcing
             targets = (
                 torch.LongTensor(batch_size).fill_(self.st_id).to(device)
             )  # [START] token
@@ -272,6 +287,7 @@ class Attention(nn.Module):
 
         self.encoder = CNN(FLAGS.data.rgb)
         self.LSTMEncoder = LSTMEncoder(FLAGS.Attention.src_dim, FLAGS.Attention.layer_num)
+
         self.decoder = AttentionDecoder(
             num_classes=len(train_dataset.id_to_token),
             src_dim=FLAGS.Attention.src_dim,
@@ -292,8 +308,9 @@ class Attention(nn.Module):
     def forward(self, input, expected, is_train, teacher_forcing_ratio):
         out = self.encoder(input)
         b, c, h, w = out.size()
-        out = out.view(b, c, h * w).transpose(1, 2)  # [b, h x w, c]
+        out = out.view(b, c, h * w).transpose(1, 2)  # [b, h x w, c] [96, 231, 512]
         out = self.LSTMEncoder(out)
+
         output = self.decoder(out, expected, is_train, teacher_forcing_ratio,
                               batch_max_length=expected.size(1))  # [b, sequence length, class size]
         return output
