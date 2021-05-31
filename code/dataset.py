@@ -137,6 +137,9 @@ class LoadDataset(Dataset):
         image = Image.open(item["path"])
         if self.rgb == 3:
             image = image.convert("RGB")
+        elif self.rgb == 2:
+            image = image.convert("L")
+            image = image.convert("RGB")
         elif self.rgb == 1:
             image = image.convert("L")
         else:

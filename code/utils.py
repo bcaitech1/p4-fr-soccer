@@ -2,6 +2,7 @@ import torch.optim as optim
 
 from networks.Attention import Attention
 from networks.SATRN import SATRN
+from networks.EFFICIENT_SATRN import EFFICIENT_SATRN
 
 
 def get_network(
@@ -19,6 +20,8 @@ def get_network(
         model = CRNN()
     elif model_type == "Attention":
         model = Attention(FLAGS, train_dataset, model_checkpoint).to(device)
+    elif model_type == "EFFICIENT_SATRN":
+        model = EFFICIENT_SATRN(FLAGS, train_dataset, model_checkpoint).to(device)
     else:
         raise NotImplementedError
 
