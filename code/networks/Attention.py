@@ -102,6 +102,7 @@ class AttentionCell(nn.Module):
     def __init__(self, src_dim, hidden_dim, embedding_dim, num_layers=1, cell_type='LSTM'):
         super(AttentionCell, self).__init__()
         self.num_layers = num_layers
+        self.src_dim = src_dim
 
         self.i2h = nn.Linear(src_dim, hidden_dim, bias=False)
         self.h2h = nn.Linear(
@@ -136,9 +137,11 @@ class AttentionCell(nn.Module):
                 raise NotImplementedError
         self.hidden_layer_norm = nn.LayerNorm(normalized_shape=hidden_dim)
         self.cell_layer_norm = nn.LayerNorm(normalized_shape=hidden_dim)
+        self.drop_out = nn.Dropout(0.3)
         self.hidden_dim = hidden_dim
 
     def forward(self, prev_hidden, src, tgt):  # src: [b, L, c]
+        batch_size = src.size()[0]
         src_features = self.i2h(src)  # [b, L, h]
         if self.num_layers == 1:
             prev_hidden_proj = self.h2h(prev_hidden[0]).unsqueeze(1)  # [b, 1, h]
@@ -151,27 +154,34 @@ class AttentionCell(nn.Module):
         alpha = F.softmax(attention_logit, dim=1)  # [b, L, 1]
         permute_alpha = alpha.permute(0, 2, 1)
         context = torch.bmm(permute_alpha, src).squeeze(1)  # [b, c]
+        attention_step = 3
+        total_steps = self.src_dim - attention_step + 1
 
+        scores = (
+            torch.FloatTensor(batch_size, 1, self.src_dim)
+                .fill_(0)
+                .to(device)
+        )
         concat_context = torch.cat([context, tgt], 1)  # [b, c+e]
 
         if self.num_layers == 1:
             cur_hidden = self.rnn(concat_context, prev_hidden)
             cur_hidden = [cur for cur in cur_hidden]
-            cur_hidden[0] = self.hidden_layer_norm(cur_hidden[0])
-            cur_hidden[1] = self.cell_layer_norm(cur_hidden[1])
+            cur_hidden[0] = self.drop_out(self.hidden_layer_norm(cur_hidden[0]))
+            cur_hidden[1] = self.drop_out(self.cell_layer_norm(cur_hidden[1]))
         else:
             cur_hidden = []
             for i, layer in enumerate(self.rnn):
                 if i == 0:
                     concat_context = layer(concat_context, prev_hidden[i])
                     concat_context = [cur for cur in concat_context]
-                    concat_context[0] = self.hidden_layer_norm(concat_context[0])
-                    concat_context[1] = self.cell_layer_norm(concat_context[1])
+                    concat_context[0] = self.drop_out(self.hidden_layer_norm(concat_context[0]))
+                    concat_context[1] = self.drop_out(self.cell_layer_norm(concat_context[1]))
                 else:
                     concat_context = layer(concat_context[0], prev_hidden[i])
                     concat_context = [cur for cur in concat_context]
-                    concat_context[0] = self.hidden_layer_norm(concat_context[0])
-                    concat_context[1] = self.hidden_layer_norm(concat_context[1])
+                    concat_context[0] = self.drop_out(self.hidden_layer_norm(concat_context[0]))
+                    concat_context[1] = self.drop_out(self.hidden_layer_norm(concat_context[1]))
 
                 cur_hidden.append(concat_context)
 
