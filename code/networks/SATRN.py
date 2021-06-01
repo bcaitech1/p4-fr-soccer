@@ -110,7 +110,7 @@ class DeepCNN300(nn.Module):
     """
 
     def __init__(
-        self, input_channel, num_in_features, output_channel=256, dropout_rate=0.2, depth=16, growth_rate=24
+            self, input_channel, num_in_features, output_channel=256, dropout_rate=0.2, depth=16, growth_rate=24
     ):
         super(DeepCNN300, self).__init__()
         self.conv0 = nn.Conv2d(
@@ -170,7 +170,6 @@ class ScaledDotProductAttention(nn.Module):
         self.dropout = nn.Dropout(p=dropout)
 
     def forward(self, q, k, v, mask=None):
-
         attn = torch.matmul(q, k.transpose(2, 3)) / self.temperature
         if mask is not None:
             attn = attn.masked_fill(mask=mask, value=float("-inf"))
@@ -202,18 +201,18 @@ class MultiHeadAttention(nn.Module):
         b, q_len, k_len, v_len = q.size(0), q.size(1), k.size(1), v.size(1)
         q = (
             self.q_linear(q)
-            .view(b, q_len, self.head_num, self.head_dim)
-            .transpose(1, 2)
+                .view(b, q_len, self.head_num, self.head_dim)
+                .transpose(1, 2)
         )
         k = (
             self.k_linear(k)
-            .view(b, k_len, self.head_num, self.head_dim)
-            .transpose(1, 2)
+                .view(b, k_len, self.head_num, self.head_dim)
+                .transpose(1, 2)
         )
         v = (
             self.v_linear(v)
-            .view(b, v_len, self.head_num, self.head_dim)
-            .transpose(1, 2)
+                .view(b, v_len, self.head_num, self.head_dim)
+                .transpose(1, 2)
         )
 
         if mask is not None:
@@ -222,8 +221,8 @@ class MultiHeadAttention(nn.Module):
         out, attn = self.attention(q, k, v, mask=mask)
         out = (
             out.transpose(1, 2)
-            .contiguous()
-            .view(b, q_len, self.head_num * self.head_dim)
+                .contiguous()
+                .view(b, q_len, self.head_num * self.head_dim)
         )
         out = self.out_linear(out)
         out = self.dropout(out)
@@ -235,24 +234,24 @@ class Feedforward(nn.Module):
     def __init__(self, filter_size=2048, hidden_dim=512, dropout=0.1):
         super(Feedforward, self).__init__()
 
-        self.layers = nn.Sequential(
-            nn.Linear(hidden_dim, filter_size, True),
-            nn.ReLU(True),
-            nn.Dropout(p=dropout),
-            nn.Linear(filter_size, hidden_dim, True),
-            nn.ReLU(True),
-            nn.Dropout(p=dropout),
-        )
-        # Convolution
-        # Reference : https://github.com/Media-Smart/vedastr/blob/0fd2a0bd7819ae4daa2a161501e9f1c2ac67e96a/configs/small_satrn.py
         # self.layers = nn.Sequential(
-        #     nn.conv2d(in_channels=hidden_dim, out_channels=filter_size, kernel_size=3, padding=1, bias=True),
+        #     nn.Linear(hidden_dim, filter_size, True),
         #     nn.ReLU(True),
         #     nn.Dropout(p=dropout),
-        #     nn.conv2d(in_channels=filter_size, out_channels=hidden_dim, kernel_size=3, padding=1, bias=True),
-        #     # nn.ReLU(True),
+        #     nn.Linear(filter_size, hidden_dim, True),
+        #     nn.ReLU(True),
         #     nn.Dropout(p=dropout),
         # )
+        # Convolution
+        # Reference : https://github.com/Media-Smart/vedastr/blob/0fd2a0bd7819ae4daa2a161501e9f1c2ac67e96a/configs/small_satrn.py
+        self.layers = nn.Sequential(
+            nn.conv2d(in_channels=hidden_dim, out_channels=filter_size, kernel_size=3, padding=1, bias=True),
+            nn.ReLU(True),
+            nn.Dropout(p=dropout),
+            nn.conv2d(in_channels=filter_size, out_channels=hidden_dim, kernel_size=3, padding=1, bias=True),
+            # nn.ReLU(True),
+            nn.Dropout(p=dropout),
+        )
 
         # Separable
         # Reference : https://github.com/clovaai/SATRN/blob/master/src/networks/SATRN.py
@@ -267,7 +266,7 @@ class Feedforward(nn.Module):
         #     nn.ReLU(True),
         #     nn.Dropout(p=dropout),
         # )
-        
+
     def forward(self, input):
         return self.layers(input)
 
@@ -289,11 +288,12 @@ class TransformerEncoderLayer(nn.Module):
         self.feedforward_norm = nn.LayerNorm(normalized_shape=input_size)
 
     def forward(self, input):
-
+        B, C, H, W = input.size()
         att = self.attention_layer(input, input, input)
         out = self.attention_norm(att + input)
-
-        ff = self.feedforward_layer(out)
+        out_ff = out.reshape(B, C, H, W)  # [B, C, H, W]
+        ff = self.feedforward_layer(out_ff)
+        ff = ff.view(B, C, H*W)
         out = self.feedforward_norm(ff + out)
         return out
 
@@ -366,7 +366,6 @@ class PositionalEncoding2D(nn.Module):
         return out
 
 
-
 class TransformerEncoderFor2DFeatures(nn.Module):
     """
     Transformer Encoder for Image
@@ -376,14 +375,14 @@ class TransformerEncoderFor2DFeatures(nn.Module):
     """
 
     def __init__(
-        self,
-        input_size,
-        hidden_dim,
-        filter_size,
-        head_num,
-        layer_num,
-        dropout_rate=0.1,
-        checkpoint=None,
+            self,
+            input_size,
+            hidden_dim,
+            filter_size,
+            head_num,
+            layer_num,
+            dropout_rate=0.1,
+            checkpoint=None,
     ):
         super(TransformerEncoderFor2DFeatures, self).__init__()
 
@@ -497,17 +496,17 @@ class PositionEncoder1D(nn.Module):
 
 class TransformerDecoder(nn.Module):
     def __init__(
-        self,
-        num_classes,
-        src_dim,
-        hidden_dim,
-        filter_dim,
-        head_num,
-        dropout_rate,
-        pad_id,
-        st_id,
-        layer_num=1,
-        checkpoint=None,
+            self,
+            num_classes,
+            src_dim,
+            hidden_dim,
+            filter_dim,
+            head_num,
+            dropout_rate,
+            pad_id,
+            st_id,
+            layer_num=1,
+            checkpoint=None,
     ):
         super(TransformerDecoder, self).__init__()
 
@@ -556,7 +555,7 @@ class TransformerDecoder(nn.Module):
         return tgt
 
     def forward(
-        self, src, text, is_train=True, batch_max_length=50, teacher_forcing_ratio=1.0
+            self, src, text, is_train=True, batch_max_length=50, teacher_forcing_ratio=1.0
     ):
 
         if is_train and random.random() < teacher_forcing_ratio:
@@ -569,7 +568,7 @@ class TransformerDecoder(nn.Module):
         else:
             out = []
             num_steps = batch_max_length - 1
-            target = torch.LongTensor(src.size(0)).fill_(self.st_id).to(device) # [START] token
+            target = torch.LongTensor(src.size(0)).fill_(self.st_id).to(device)  # [START] token
             features = [None] * self.layer_num
 
             for t in range(num_steps):
@@ -586,11 +585,11 @@ class TransformerDecoder(nn.Module):
 
                 _out = self.generator(tgt)  # [b, 1, c]
                 target = torch.argmax(_out[:, -1:, :], dim=-1)  # [b, 1]
-                target = target.squeeze()   # [b]
+                target = target.squeeze()  # [b]
                 out.append(_out)
-            
-            out = torch.stack(out, dim=1).to(device)    # [b, max length, 1, class length]
-            out = out.squeeze(2)    # [b, max length, class length]
+
+            out = torch.stack(out, dim=1).to(device)  # [b, max length, 1, class length]
+            out = out.squeeze(2)  # [b, max length, class length]
 
         return out
 
