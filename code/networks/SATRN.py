@@ -243,7 +243,29 @@ class Feedforward(nn.Module):
             nn.ReLU(True),
             nn.Dropout(p=dropout),
         )
+        # Convolution
+        # self.layers = nn.Sequential(
+        #     nn.conv2d(in_channels=hidden_dim, out_channels=filter_size, kernel_size=3, padding=1, bias=True),
+        #     nn.ReLU(True),
+        #     nn.Dropout(p=dropout),
+        #     nn.conv2d(in_channels=filter_size, out_channels=hidden_dim, kernel_size=3, padding=1, bias=True),
+        #     # nn.ReLU(True),
+        #     nn.Dropout(p=dropout),
+        # )
 
+        # Separable
+        # self.layers = nn.Sequential(
+        #     nn.conv2d(in_channels=hidden_dim, out_channels=filter_size, kernel_size=1, padding=0, bias=True),
+        #     nn.ReLU(True),
+        #     nn.Dropout(p=dropout),
+        #     nn.conv2d(in_channels=filter_size, out_channels=filter_size, kernel_size=3, padding=1, bias=True),
+        #     nn.ReLU(True),
+        #     nn.Dropout(p=dropout),
+        #     nn.conv2d(in_channels=filter_size, out_channels=hidden_dim, kernel_size=1, padding=0, bias=True),
+        #     nn.ReLU(True),
+        #     nn.Dropout(p=dropout),
+        # )
+        
     def forward(self, input):
         return self.layers(input)
 
