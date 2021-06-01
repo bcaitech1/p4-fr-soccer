@@ -35,9 +35,9 @@ class FocalLoss(nn.Module):
 
     def forward(self, input, target, reduction="mean"):
         if self.ignore_index:
-            cent_loss = F.cross_entsropy(F.normalize(input), target, reduce=False, ignore_index=self.ignore_index)
+            cent_loss = F.cross_entropy(F.normalize(input), target, reduce=False, ignore_index=self.ignore_index)
         else:
-            cent_loss = F.cross_entsropy(F.normalize(input), target, reduce=False)
+            cent_loss = F.cross_entropy(F.normalize(input), target, reduce=False)
 
         pt = torch.exp(-cent_loss)
         focal_loss = self.alpha * (1-pt)**self.gamma * cent_loss
