@@ -244,6 +244,7 @@ class Feedforward(nn.Module):
             nn.Dropout(p=dropout),
         )
         # Convolution
+        # Reference : https://github.com/Media-Smart/vedastr/blob/0fd2a0bd7819ae4daa2a161501e9f1c2ac67e96a/configs/small_satrn.py
         # self.layers = nn.Sequential(
         #     nn.conv2d(in_channels=hidden_dim, out_channels=filter_size, kernel_size=3, padding=1, bias=True),
         #     nn.ReLU(True),
@@ -254,6 +255,7 @@ class Feedforward(nn.Module):
         # )
 
         # Separable
+        # Reference : https://github.com/clovaai/SATRN/blob/master/src/networks/SATRN.py
         # self.layers = nn.Sequential(
         #     nn.conv2d(in_channels=hidden_dim, out_channels=filter_size, kernel_size=1, padding=0, bias=True),
         #     nn.ReLU(True),
