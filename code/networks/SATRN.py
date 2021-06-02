@@ -231,27 +231,29 @@ class MultiHeadAttention(nn.Module):
 
 
 class Feedforward(nn.Module):
-    def __init__(self, filter_size=2048, hidden_dim=512, dropout=0.1):
+    def __init__(self, filter_size=2048, hidden_dim=512, dropout=0.1, encode=None):
         super(Feedforward, self).__init__()
 
-        # self.layers = nn.Sequential(
-        #     nn.Linear(hidden_dim, filter_size, True),
-        #     nn.ReLU(True),
-        #     nn.Dropout(p=dropout),
-        #     nn.Linear(filter_size, hidden_dim, True),
-        #     nn.ReLU(True),
-        #     nn.Dropout(p=dropout),
-        # )
         # Convolution
         # Reference : https://github.com/Media-Smart/vedastr/blob/0fd2a0bd7819ae4daa2a161501e9f1c2ac67e96a/configs/small_satrn.py
-        self.layers = nn.Sequential(
-            nn.conv2d(in_channels=hidden_dim, out_channels=filter_size, kernel_size=3, padding=1, bias=True),
-            nn.ReLU(True),
-            nn.Dropout(p=dropout),
-            nn.conv2d(in_channels=filter_size, out_channels=hidden_dim, kernel_size=3, padding=1, bias=True),
-            # nn.ReLU(True),
-            nn.Dropout(p=dropout),
-        )
+        if encode == True:
+            self.layers = nn.Sequential(
+                nn.Conv2d(in_channels=hidden_dim, out_channels=filter_size, kernel_size=3, padding=1, bias=True),
+                nn.ReLU(True),
+                nn.Dropout(p=dropout),
+                nn.Conv2d(in_channels=filter_size, out_channels=hidden_dim, kernel_size=3, padding=1, bias=True),
+                # nn.ReLU(True),
+                nn.Dropout(p=dropout),
+            )
+        else:
+            self.layers = nn.Sequential(
+                nn.Linear(hidden_dim, filter_size, True),
+                nn.ReLU(True),
+                nn.Dropout(p=dropout),
+                nn.Linear(filter_size, hidden_dim, True),
+                nn.ReLU(True),
+                nn.Dropout(p=dropout),
+            )
 
         # Separable
         # Reference : https://github.com/clovaai/SATRN/blob/master/src/networks/SATRN.py
@@ -283,17 +285,18 @@ class TransformerEncoderLayer(nn.Module):
         )
         self.attention_norm = nn.LayerNorm(normalized_shape=input_size)
         self.feedforward_layer = Feedforward(
-            filter_size=filter_size, hidden_dim=input_size
+            filter_size=filter_size, hidden_dim=input_size, encode=True
         )
         self.feedforward_norm = nn.LayerNorm(normalized_shape=input_size)
 
-    def forward(self, input):
-        B, C, H, W = input.size()
+    def forward(self, input, shape):
+        B, C, H, W = shape
         att = self.attention_layer(input, input, input)
-        out = self.attention_norm(att + input)
-        out_ff = out.reshape(B, C, H, W)  # [B, C, H, W]
-        ff = self.feedforward_layer(out_ff)
-        ff = ff.view(B, C, H*W)
+        # input = input.transpose(1, 2).view(B, C, H, W)  # [b, h x w, c]
+        out = self.attention_norm(att + input)  # [B, H*W, C]
+        out_ff = out.transpose(1, 2).view(B, C, H, W)  # [B, C, H, W]
+        ff = self.feedforward_layer(out_ff)  # [B, C, H, W]
+        ff = ff.view(B, C, H * W).transpose(1, 2)  # [B, C, H*W]
         out = self.feedforward_norm(ff + out)
         return out
 
@@ -409,10 +412,11 @@ class TransformerEncoderFor2DFeatures(nn.Module):
 
         # flatten
         b, c, h, w = out.size()
+        shape = [b, c, h, w]
         out = out.view(b, c, h * w).transpose(1, 2)  # [b, h x w, c]
 
         for layer in self.attention_layers:
-            out = layer(out)
+            out = layer(out, shape)
         return out
 
 
