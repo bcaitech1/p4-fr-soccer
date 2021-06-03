@@ -511,7 +511,7 @@ class EFFICIENT_SATRN(nn.Module):
         )
 
         self.criterion = (
-            nn.CrossEntropyLoss()
+            nn.CrossEntropyLoss(ignore_index=train_dataset.token_to_id[PAD])
         )  # without ignore_index=train_dataset.token_to_id[PAD]
 
         if checkpoint:
