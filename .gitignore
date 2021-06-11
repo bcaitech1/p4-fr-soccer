@@ -12,3 +12,6 @@ code/log
 
 # submit
 code/submit
+
+# no wandb
+code/wandb
