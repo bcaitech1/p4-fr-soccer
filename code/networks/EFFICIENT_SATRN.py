@@ -4,101 +4,37 @@ import torch.nn.functional as F
 import numpy as np
 import math
 import random
+import timm
 
 from dataset import START, PAD
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-class BottleneckBlock(nn.Module):
-    """
-    Dense Bottleneck Block
-
-    It contains two convolutional layers, a 1x1 and a 3x3.
-    """
-
-    def __init__(self, input_size, growth_rate, dropout_rate=0.2, num_bn=3):
-        """
-        Args:
-            input_size (int): Number of channels of the input
-            growth_rate (int): Number of new features being added. That is the ouput
-                size of the last convolutional layer.
-            dropout_rate (float, optional): Probability of dropout [Default: 0.2]
-        """
-        super(BottleneckBlock, self).__init__()
-        inter_size = num_bn * growth_rate
-        self.norm1 = nn.BatchNorm2d(input_size)
-        self.relu = nn.ReLU(inplace=True)
-        self.conv1 = nn.Conv2d(
-            input_size, inter_size, kernel_size=1, stride=1, bias=False
+class EfficientNetV2(nn.Module):
+    def __init__(self, dropout_rate=0.2):
+        super(EfficientNetV2, self).__init__()
+        self.conv = timm.create_model('tf_efficientnetv2_l_in21ft1k', pretrained=True, num_classes=0, global_pool='')
+        self.trans1_norm = nn.BatchNorm2d(1280)
+        self.trans1_relu = nn.ReLU(inplace=True)
+        self.trans1_conv = nn.Conv2d(
+            1280, 300, kernel_size=1, stride=1, bias=False  # 128
         )
-        self.norm2 = nn.BatchNorm2d(inter_size)
-        self.conv2 = nn.Conv2d(
-            inter_size, growth_rate, kernel_size=3, stride=1, padding=1, bias=False
-        )
-        self.dropout = nn.Dropout(dropout_rate)
-
+#         self.trans2_norm = nn.BatchNorm2d(640)
+#         self.trans2_relu = nn.ReLU(inplace=True)
+#         self.trans2_conv = nn.Conv2d(
+#             640, 300, kernel_size=1, stride=1, bias=False  # 128
+#         )
+    
     def forward(self, x):
-        out = self.conv1(self.relu(self.norm1(x)))
-        out = self.conv2(self.relu(self.norm2(out)))
-        out = self.dropout(out)
-        return torch.cat([x, out], 1)
-
-
-class TransitionBlock(nn.Module):
-    """
-    Transition Block
-
-    A transition layer reduces the number of feature maps in-between two bottleneck
-    blocks.
-    """
-
-    def __init__(self, input_size, output_size):
-        """
-        Args:
-            input_size (int): Number of channels of the input
-            output_size (int): Number of channels of the output
-        """
-        super(TransitionBlock, self).__init__()
-        self.norm = nn.BatchNorm2d(input_size)
-        self.relu = nn.ReLU(inplace=True)
-        self.conv = nn.Conv2d(
-            input_size, output_size, kernel_size=1, stride=1, bias=False
-        )
-        self.pool = nn.AvgPool2d(kernel_size=2, stride=2)
-
-    def forward(self, x):
-        out = self.conv(self.relu(self.norm(x)))
-        return self.pool(out)
-
-
-class DenseBlock(nn.Module):
-    """
-    Dense block
-
-    A dense block stacks several bottleneck blocks.
-    """
-
-    def __init__(self, input_size, growth_rate, depth, dropout_rate=0.2):
-        """
-        Args:
-            input_size (int): Number of channels of the input
-            growth_rate (int): Number of new features being added per bottleneck block
-            depth (int): Number of bottleneck blocks
-            dropout_rate (float, optional): Probability of dropout [Default: 0.2]
-        """
-        super(DenseBlock, self).__init__()
-        layers = [
-            BottleneckBlock(
-                input_size + i * growth_rate, growth_rate, dropout_rate=dropout_rate
-            )
-            for i in range(depth)
-        ]
-        self.block = nn.Sequential(*layers)
-
-    def forward(self, x):
-        return self.block(x)
-
+        x = self.conv(x)
+        x = self.trans1_norm(x)
+        x = self.trans1_relu(x)
+        x = self.trans1_conv(x)
+#         x = self.trans2_norm(x)
+#         x = self.trans2_relu(x)
+#         x = self.trans2_conv(x)
+        return x
 
 class DeepCNN300(nn.Module):
     """
@@ -341,11 +277,11 @@ class TransformerEncoderFor2DFeatures(nn.Module):
     ):
         super(TransformerEncoderFor2DFeatures, self).__init__()
 
-        self.shallow_cnn = DeepCNN300(
-            input_size,
-            num_in_features=48,
-            output_channel=hidden_dim,
-            dropout_rate=dropout_rate,
+        self.shallow_cnn = EfficientNetV2(
+#             input_size,
+#             num_in_features=48,
+#             output_channel=hidden_dim,
+#             dropout_rate=dropout_rate,
         )
         self.positional_encoding = PositionalEncoding2D(hidden_dim)
         self.attention_layers = nn.ModuleList(
@@ -549,9 +485,9 @@ class TransformerDecoder(nn.Module):
         return out
 
 
-class SATRN(nn.Module):
+class EFFICIENT_SATRN(nn.Module):
     def __init__(self, FLAGS, train_dataset, checkpoint=None):
-        super(SATRN, self).__init__()
+        super(EFFICIENT_SATRN, self).__init__()
 
         self.encoder = TransformerEncoderFor2DFeatures(
             input_size=FLAGS.data.rgb,

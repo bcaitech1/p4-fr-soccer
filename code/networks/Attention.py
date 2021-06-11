@@ -247,7 +247,7 @@ class Attention(nn.Module):
             cell_type=FLAGS.Attention.cell_type)
 
         self.criterion = (
-            nn.CrossEntropyLoss()
+            nn.CrossEntropyLoss(ignore_index=train_dataset.token_to_id[PAD])
         )
 
         if checkpoint:
