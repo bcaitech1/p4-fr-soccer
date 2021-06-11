@@ -1,8 +1,7 @@
 import torch.optim as optim
-
 from networks.Attention import Attention
 from networks.SATRN import SATRN
-
+from networks.ViT import ViT
 
 def get_network(
     model_type,
@@ -19,7 +18,11 @@ def get_network(
         model = CRNN()
     elif model_type == "Attention":
         model = Attention(FLAGS, train_dataset, model_checkpoint).to(device)
+    elif model_type == "ViT":
+        model = ViT(FLAGS, train_dataset, model_checkpoint).to(device)
+
     else:
+
         raise NotImplementedError
 
     return model
