@@ -8,7 +8,7 @@
     * [Software](#Software)
     * [Dependencies](#Dependencies)
 * [Usage](#usage)
-* [File Structure](#file-structure)
+* [File Structure](#File-structure)
 * [Models](#Models)
     * [ASTER](#ASTER)
     * [SATRN](#SATRN)
@@ -22,18 +22,18 @@
 - 2021년 05월 24일 ~ 2021년 06월 15일
 
 ## 수식 인식기 프로젝트 소개
-
+![formular](https://user-images.githubusercontent.com/52662993/121814480-48a2c480-ccac-11eb-8201-96eed32a245b.png)
 - **수식인식기 프로젝트** 는 수식이 적혀있는 이미지를 LaTex표현으로 바꾸는 Image to text 테스크 입니다.
 - 수식이 적혀있는 **손글씨 5만장, 인쇄물 5만장**의 데이터로 학습을 진행하고 **1만2천장**의 수식 이미지를 LaTex로 변환하는 과제입니다. 
 
 ## 평가 방법
 - 0.9 * **문장 단위 정확도** + 0.1*(1 - **단어 오류율**)
 - **문장 단위 정확도**(Sentence Accuracy)(%): 정답과 정확하게 일치하는 문장 갯수 / 전체 문장 갯수
- ex) GT: a + b = 3 Predict: a + b = 2
- 위의 예시처럼 전체 수식에서 하나라도 틀린 부분이 있다면 0점 전체가 맞으면 1점을 얻게됩니다.
+ <img width="717" alt="ACC" src="https://user-images.githubusercontent.com/52662993/121814386-c3b7ab00-ccab-11eb-977e-116ef05a1502.png">
 - **단어 오류율**(Word Error Rate)(%): 삽입, 삭제, 대체가 필요한 횟수 / 전체 단어 수
+<img width="499" alt="WER" src="https://user-images.githubusercontent.com/52662993/121814389-c87c5f00-ccab-11eb-91a4-65e95aef6b21.png">
 
-## Environment
+## [Environment]
 
 ### Hardware
 
