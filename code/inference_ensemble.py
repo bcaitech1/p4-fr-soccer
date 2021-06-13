@@ -142,8 +142,8 @@ def main(parser):
         sequence_str = id_to_string(sequence, test_data_loader, do_eval=1)
         for path, predicted in zip(d["file_path"], sequence_str):
             results.append((path, predicted))
-    # ver2
-    # device = 'cpu'
+            
+    # Ver2: Out of Memory
     # for idx1, model in enumerate(model_list):
     #     model.to(device)
     #     model.eval()
@@ -151,21 +151,17 @@ def main(parser):
     #         input = d["image"].to(device)
     #         expected = d["truth"]["encoded"].to(device)
     #         output = model(input, expected, False, 0.0)
-    #         input.to('cpu')
-    #         expected.to('cpu')
     #         if idx2 == 0:
-    #             decoded_values = output.transpose(1, 2)
+    #             decoded_values = output.transpose(1, 2) #[8, 245, 231]
     #         else:
     #             decoded_values_temp = output.transpose(1, 2)
     #             decoded_values= torch.cat((decoded_values, decoded_values_temp), dim=0)            
     #            # [32, 245, 231]
-
-    #     model.to('cpu')
+    #     del model
     #     if idx1 == 0:
     #         tensor = decoded_values
     #     else:
     #         tensor += decoded_values
-
     # _, sequence = torch.topk(tensor, 1, dim=1)
     # sequence = sequence.squeeze(1)
     # sequence_str = id_to_string(sequence, test_data_loader, do_eval=1)
