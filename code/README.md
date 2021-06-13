@@ -1,65 +1,144 @@
-# 업스테이지 수학 수식 OCR 모델
+# Team sOcCeR's formular recognizer(OCR)
 
-## Requirements
+## [목차]
 
-- Python 3
-- [PyTorch][pytorch]
+* [수식 인식기 프로젝트 소개](#수식-인식기-프로젝트-소개)
+* [Environment](#Environment)
+    * [Hardware](#Hardware)
+    * [Software](#Software)
+    * [Dependencies](#Dependencies)
+* [Usage](#usage)
+* [File Structure](#file-structure)
+* [Models](#Models)
+    * [ASTER](#ASTER)
+    * [SATRN](#SATRN)
+    * [ViT](#ViT)
+* [Contributors](#contributors)
+* [Reference](#reference)
+    * [Papers](#papers)
 
-All dependencies can be installed with PIP.
 
-```sh
-pip install tensorboardX tqdm pyyaml psutil
+## 프로젝트 기간
+- 2021년 05월 24일 ~ 2021년 06월 15일
+
+## 수식 인식기 프로젝트 소개
+
+- **수식인식기 프로젝트** 는 수식이 적혀있는 이미지를 LaTex표현으로 바꾸는 Image to text 테스크 입니다.
+- 수식이 적혀있는 **손글씨 5만장, 인쇄물 5만장**의 데이터로 학습을 진행하고 **1만2천장**의 수식 이미지를 LaTex로 변환하는 과제입니다. 
+
+## 평가 방법
+- 0.9 * **문장 단위 정확도** + 0.1*(1 - **단어 오류율**)
+- **문장 단위 정확도**(Sentence Accuracy)(%): 정답과 정확하게 일치하는 문장 갯수 / 전체 문장 갯수
+ ex) GT: a + b = 3 Predict: a + b = 2
+ 위의 예시처럼 전체 수식에서 하나라도 틀린 부분이 있다면 0점 전체가 맞으면 1점을 얻게됩니다.
+- **단어 오류율**(Word Error Rate)(%): 삽입, 삭제, 대체가 필요한 횟수 / 전체 단어 수
+
+## Environment
+
+### Hardware
+
+- CPU: Xeon Gold 5120
+- GPU: Tesla V100 32GB
+- Mem: > 90GB
+- Data is stored in remote server storage.
+
+### Software
+
+- System: Ubuntu 18.04.4 LTS with Linux 4.4.0-210-generic kernel.
+- Python: 3.7 distributed by Anaconda.
+- CUDA: 10.1
+- Pytorch: 1.4.0
+
+### Dependencies
+
+- scikit_image==0.14.1
+- opencv_python==3.4.4.19
+- tqdm==4.28.1
+- torch==1.4.0
+- scipy==1.2.0
+- numpy==1.15.4
+- torchvision==0.2.1
+- Pillow==8.1.1
+- tensorboardX==1.5
+- editdistance==0.5.3
+
+```python
+$ pip install -r requirements.txt
 ```
-
-현재 검증된 GPU 개발환경으로는
-- `Pytorch 1.0.0 (CUDA 10.1)`
-- `Pytorch 1.4.0 (CUDA 10.0)`
-- `Pytorch 1.7.1 (CUDA 11.0)`
-
-
-## Supported Models
-
-- [CRNN][arxiv-zhang18]
-- [SATRN](https://github.com/clovaai/SATRN)
-
-
-## Supported Data
-- [Aida][Aida] (synthetic handwritten)
-- [CROHME][CROHME] (online handwritten)
-- [IM2LATEX][IM2LATEX] (pdf, synthetic handwritten)
-- [Upstage][Upstage] (print, handwritten)
-
-
-모든 데이터는 팀 저장소에서 train-ready 포맷으로 다운 가능하다.
-```
-[dataset]/
-├── gt.txt
-├── tokens.txt
-└── images/
-    ├── *.jpg
-    ├── ...     
-    └── *.jpg
-```
-
 
 ## Usage
 
-### Training
-
-```sh
-python train.py
+모델을 사용하기 위해서는 ~~~ 를 실행시킵니다.
+```bash
+$ python train.py --c your_model.yaml
 ```
 
+총 3가지 모델을 선택할 수 있습니다.
 
-### Evaluation
+- **Attention(ASTER)**
+- **SATRN**
+- **ViT**
 
-```sh
-python evaluate.py
+
+
+
+## File Structure
+- ___코드 정리 후 수정___
+
+```python
+p4-dst-chatting-day/code/
+│
+├── configs
+├── datatools
+├── log
+├── network
+├── submit
+├── checkpoint.py
+├── dataset.py
+├── dataset_ViT.py
+├── submit
+└── data_utils.py
 ```
+___코드 정리 후 수정___
 
-[arxiv-zhang18]: https://arxiv.org/pdf/1801.03530.pdf
-[CROHME]: https://www.isical.ac.in/~crohme/
-[Aida]: https://www.kaggle.com/aidapearson/ocr-data
-[Upstage]: https://www.upstage.ai/
-[IM2LATEX]: http://lstm.seas.harvard.edu/latex/
-[pytorch]: https://pytorch.org/
+## Models
+
+
+### ASTER
+
+### SATRN
+
+### ViT
+
+
+
+
+
+
+## Contributors
+
+
+
+- **이동빈** ([Dongbin-Lee-git](https://github.com/Dongbin-Lee-git))
+- **이근재** ([GJ Lee](https://github.com/lgj9172))
+- **이정환** ([JeonghwanLee1](https://github.com/JeonghwanLee1))
+- **조영민** ([joqjoq966](https://github.com/joqjoq966))
+- **김수호** ([Sooho-Kim](https://github.com/Sooho-Kim))
+- **신문종** ([moon-jong](https://github.com/moon-jong))
+
+
+
+## [Reference]
+
+
+
+### Papers
+
+- [On Recognizing Texts of Arbitrary Shapes with 2D Self-Attention](https://arxiv.org/pdf/1910.04396v1.pdf)
+- [ASTER: An Attentional Scene Text Recognizer with Flexible Rectification](http://122.205.5.5:8071/UpLoadFiles/Papers/ASTER_PAMI18.pdf)
+- [RealFormer: Transformer Likes Residual Attention](https://arxiv.org/pdf/2012.11747.pdf)
+- [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale](https://arxiv.org/pdf/2010.11929v2.pdf)
+
+### Dataset
+
+- 
