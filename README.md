@@ -86,7 +86,7 @@ $ python train.py --c your_model.yaml
 - ___코드 정리 후 수정___
 
 ```python
-p4-dst-chatting-day/code/
+p4-fr-soccer/code/
 │
 ├── configs
 ├── datatools
