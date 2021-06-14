@@ -176,6 +176,7 @@ def main(config_file):
     """
     Train math formula recognition model
     """
+
     options = Flags(config_file).get()
     with open(config_file) as file:
         yml = yaml.safe_load(file)
@@ -190,8 +191,8 @@ def main(config_file):
 
     is_cuda = torch.cuda.is_available()
     hardware = "cuda" if is_cuda else "cpu"
-    #device = torch.device(hardware)
-    device = "cuda"
+    device = torch.device(hardware)
+    #device = "cpu"
     print("--------------------------------")
     print("Running {} on device {}\n".format(options.network, device))
 
@@ -246,7 +247,7 @@ def main(config_file):
 
     train_transform = alb.Compose(
         [
-            #alb.Resize(options.input_size.height, options.input_size.width),
+            alb.Resize(options.input_size.height, options.input_size.width),
             # alb.Compose(
             #     [alb.ShiftScaleRotate(shift_limit=0, scale_limit=(-.15, 0), rotate_limit=1, border_mode=0,
             #                           interpolation=3,
@@ -267,7 +268,7 @@ def main(config_file):
     )
     test_transform = alb.Compose(
         [
-            #alb.Resize(options.input_size.height, options.input_size.width),
+            alb.Resize(options.input_size.height, options.input_size.width),
             alb.ToGray(always_apply=True),
             # alb.Normalize((0.7931, 0.7931, 0.7931), (0.1738, 0.1738, 0.1738)),
             # alb.Sharpen()
@@ -294,7 +295,7 @@ def main(config_file):
         train_dataset,
     )
 
-    print(model)
+    #print(model)
 
     model.train()
     criterion = model.criterion.to(device)
@@ -535,12 +536,12 @@ if __name__ == "__main__":
         "-c",
         "--config_file",
         dest="config_file",
-        default="configs/ViT.yaml",
+        default="configs/swin.yaml",
         type=str,
         help="Path of configuration file",
     )
     parser = parser.parse_args()
     #wandb.init()
     wandb.init(project='OCR', entity='stage-4-soccer')
-    wandb.run.name = "ViT_Patch4"
+    wandb.run.name = "swin"
     main(parser.config_file)

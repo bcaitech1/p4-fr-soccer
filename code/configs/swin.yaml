@@ -1,0 +1,57 @@
+network: swin
+input_size:
+  height: 112 # 192
+  width: 448 # 672
+swin:
+  max_seq_len: 500
+  channels: 1
+  backbone:
+    layers:
+      - 2
+      - 3
+      - 7
+  encoder:
+    patch_size: 4
+    dim: 256
+    depth: 4
+    heads: 8
+  decoder:
+    dim: 256
+    depth: 4
+    heads: 8
+    args:
+      attn_on_attn: true
+      cross_attend: true
+      ff_glu: true
+      rel_pos_bias: false
+      use_scalenorm: false
+checkpoint: "/opt/ml/code/log/ViT/checkpoints/ViT.pth"
+prefix: "./log/swin"
+
+data:
+  train:
+    - "/opt/ml/input/data/train_dataset/gt.txt"
+  test:
+    - ""
+  token_paths:
+    - "/opt/ml/input/data/train_dataset/tokens.txt"  # 241 tokens
+  dataset_proportions:  # proportion of data to take from train (not test)
+    - 1.0
+  random_split: True # if True, random split from train files
+  test_proportions: 0.2 # only if random_split is True
+  crop: True
+  rgb: 1    # 3 for color, 1 for greyscale
+
+batch_size: 64 #36
+num_workers: 4 #4
+num_epochs: 60
+print_epochs: 1
+dropout_rate: 0.3
+max_grad_norm: 2.0
+seed: 1234
+optimizer:
+  optimizer: 'Adam' # Adam, Adadelta
+  lr: 2e-3 #5e-4 # 1e-4
+  weight_decay: 1e-4
+  is_cycle: True
+teacher_forcing_ratio: 0.0
