@@ -22,6 +22,10 @@
 ## 프로젝트 기간
 - 2021년 05월 24일 ~ 2021년 06월 15일
 
+## 프로젝트 overview
+![overview](https://user-images.githubusercontent.com/52662993/121866863-4e46eb80-cd3a-11eb-8b8e-71f9fce6a4bd.png)
+
+
 ## 수식 인식기 프로젝트 소개
 ![formular](https://user-images.githubusercontent.com/52662993/121814480-48a2c480-ccac-11eb-8201-96eed32a245b.png)
 - **수식인식기 프로젝트** 는 수식이 적혀있는 이미지를 LaTex표현으로 바꾸는 Image to text 테스크 입니다.
