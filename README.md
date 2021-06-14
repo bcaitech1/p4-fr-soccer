@@ -70,14 +70,6 @@
 ```python
 $ pip install -r requirements.txt
 ```
-## Issue
-ViT와 Swin은 는 Dependency 이슈로 인해 timm package version을 변경해야합니다.
-
-ViT Dependency
-- timm==0.4.5
-
-Swin Dependency
-- timm==0.4.9
 
 ## Usage
 
@@ -152,9 +144,10 @@ p4-fr-hatting-day/code/
 
 ### SATRN
 
-<img width="445" alt="스크린샷 2021-06-14 오후 5 20 13" src="https://user-images.githubusercontent.com/52662993/121861565-e04bf580-cd34-11eb-9d3f-897dde58d309.png">
+![스크린샷 2021-06-14 오후 9 35 48](https://user-images.githubusercontent.com/52662993/121893056-7f361900-cd58-11eb-894e-69806f4e077e.png)
 
-<img width="461" alt="스크린샷 2021-06-14 오후 5 22 20" src="https://user-images.githubusercontent.com/52662993/121861772-17220b80-cd35-11eb-955a-8857858fac4b.png">
+
+
 
 
 ### ViT
