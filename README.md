@@ -144,7 +144,7 @@ p4-fr-hatting-day/code/
 
 ### SATRN
 <p align="center">
-![스크린샷 2021-06-14 오후 9 35 48](https://user-images.githubusercontent.com/52662993/121893056-7f361900-cd58-11eb-894e-69806f4e077e.png)
+<img width="481" alt="스크린샷 2021-06-14 오후 5 23 34" src="https://user-images.githubusercontent.com/52662993/121893056-7f361900-cd58-11eb-894e-69806f4e077e.png">
 </p>
 
 
