@@ -1,6 +1,6 @@
 # Team sOcCeR's formular recognizer(OCR)
 
-## [목차]
+## 목차
 
 * [수식 인식기 프로젝트 소개](#수식-인식기-프로젝트-소개)
 * [Environment](#Environment)
@@ -38,7 +38,7 @@
 - **단어 오류율**(Word Error Rate)(%): 삽입, 삭제, 대체가 필요한 횟수 / 전체 단어 수
 <img width="499" alt="WER" src="https://user-images.githubusercontent.com/52662993/121814389-c87c5f00-ccab-11eb-91a4-65e95aef6b21.png">
 
-## [Environment]
+## Environment
 
 ### Hardware
 
@@ -71,19 +71,21 @@
 $ pip install -r requirements.txt
 ```
 
-## Usage
-
-모델을 사용하기 위해서는 다음 명령어를 실행시킵니다.
+### Attention, SATRN
 ```bash
-$ python train.py --c your_model.yaml
+$ python train.py --c {your_model}.yaml
 ```
-
-총 3가지 모델을 선택할 수 있습니다.
-
+총 2가지 모델을 선택할 수 있습니다.
 - **Attention(ASTER)**
 - **SATRN**
-- **ViT**
-
+### Vit
+```bash
+$ python train_ViT.py
+```
+### Swin
+```bash
+$ python train_swin.py
+```
 
 ## Dataset
 학습이미지 예시:\
@@ -138,11 +140,20 @@ p4-fr-hatting-day/code/
 
 
 ### ASTER
+- CNN과 LSTM으로 구성된 Encoder와 Encoder output과 전 LSTM의 hidden state를 Attention하는 모델입니다.
+- Scene text recognition의 기초 모델입니다.
+- BLSTM의 hidden state를 더하여 디코더로 넘겨주었습니다.
+- CNN backbone: EfficientNet V2
 <p align="center">
 <img width="406" alt="스크린샷 2021-06-14 오후 5 19 14" src="https://user-images.githubusercontent.com/52662993/121861277-a975df80-cd34-11eb-9e64-85dd16b2c8e3.png">
 </p>
 
 ### SATRN
+- ASTER와 마찬가지로 Encoder, Decoder로 구성된 모델입니다.
+- 이미지의 수평, 수직정보의 중요도를 학습하는 A2DPE, 문자 주변 공간정보를 학습하는 Locality-aware feedforward가 특징인 모델입니다.
+- Multi head attention 진행시 [Residual attention](https://arxiv.org/pdf/2012.11747.pdf)을 적용하여 성능 개선
+- Weight initialize는 [RealFormer논문](https://arxiv.org/pdf/2012.11747.pdf)을 참고하였습니다.
+- CNN backbone: ResnetRS152, EfficientNet v2를 사용하였습니다.
 <p align="center">
 <img width="481" alt="스크린샷 2021-06-14 오후 5 23 34" src="https://user-images.githubusercontent.com/52662993/121893056-7f361900-cd58-11eb-894e-69806f4e077e.png">
 </p>
@@ -151,6 +162,8 @@ p4-fr-hatting-day/code/
 
 
 ### ViT
+- 이미지를 patch로 나누어 하나의 시퀀스로 취급하여 transformer를 통해 학습하는 모델입니다.
+- 
 <p align="center">
 <img width="481" alt="스크린샷 2021-06-14 오후 5 23 34" src="https://user-images.githubusercontent.com/52662993/121861936-49336d80-cd35-11eb-85c8-875409a1df63.png">
 </p>
@@ -178,12 +191,17 @@ p4-fr-hatting-day/code/
 
 
 ### Papers
-
 - [On Recognizing Texts of Arbitrary Shapes with 2D Self-Attention](https://arxiv.org/pdf/1910.04396v1.pdf)
 - [ASTER: An Attentional Scene Text Recognizer with Flexible Rectification](http://122.205.5.5:8071/UpLoadFiles/Papers/ASTER_PAMI18.pdf)
 - [RealFormer: Transformer Likes Residual Attention](https://arxiv.org/pdf/2012.11747.pdf)
 - [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale](https://arxiv.org/pdf/2010.11929v2.pdf)
+- [EfficientNetV2: Smaller Models and Faster Training](https://arxiv.org/pdf/2104.00298)
+- [ReZero is All You Need: Fast Convergence at Large Depth](https://arxiv.org/abs/2003.04887)
+- [Repulsive Attention:Rethinking Multi-head Attention as Bayesian Inference](https://arxiv.org/pdf/2009.09364.pdf)
+- [Revisiting ResNets: Improved Training and Scaling Strategies](https://arxiv.org/abs/2103.07579)
+- [Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks](https://arxiv.org/abs/1703.10593)
+- [Contrastive Learning for Unpaired Image-to-Image Translation](https://arxiv.org/pdf/2007.15651.pdf)
+- [High-Performance Large-Scale Image Recognition Without Normalization](https://arxiv.org/abs/2102.06171)
 
 ### Dataset
-
-- 
+-
