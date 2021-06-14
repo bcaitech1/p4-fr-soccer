@@ -89,6 +89,13 @@ $ python train.py --c your_model.yaml
 - **ViT**
 
 
+## Dataset
+학습이미지 예시:\
+![image](https://user-images.githubusercontent.com/52662993/121864735-30788700-cd38-11eb-9519-26288b7f0d88.png)
+
+Ground Truth:\
+x = \frac { - b \pm \sqrt { b ^ 2 - 4 a c } } { 2 a }  \ { \text { when } } \ {a x ^ 2 + b x + c = 0}
+
 
 
 ## File Structure
