@@ -203,5 +203,8 @@ p4-fr-hatting-day/code/
 - [Contrastive Learning for Unpaired Image-to-Image Translation](https://arxiv.org/pdf/2007.15651.pdf)
 - [High-Performance Large-Scale Image Recognition Without Normalization](https://arxiv.org/abs/2102.06171)
 
-### Dataset
--
+### Supported Data
+- [Aida](https://www.kaggle.com/aidapearson/ocr-data)
+- [CHROME](https://www.isical.ac.in/~crohme/)
+- [IM2LATEX](http://lstm.seas.harvard.edu/latex/)
+- [Upstage](https://www.upstage.ai/)
