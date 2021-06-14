@@ -83,23 +83,44 @@ $ python train.py --c your_model.yaml
 
 
 ## File Structure
-- ___코드 정리 후 수정___
 
 ```python
-p4-fr-soccer/code/
+p4-fr-hatting-day/code/
 │
 ├── configs
+│    ├── Attention.yaml
+│    ├── EFFICIENT_SATRN.yaml
+│    ├── EFFICIENT_SATRNv6.yaml
+│    ├── ...
+│    └── swin.py
 ├── datatools
-├── log
+│    ├── extract_tokens.py
+│    ├── parse_upstage.py
+│    └── train_test_split.py
 ├── network
+│    ├── Attention.py
+│    ├── EFFICIENT_SATRN.py
+│    ├── SATRN_extension.py
+│    ├── ...
+│    └── swin.py
 ├── submit
 ├── checkpoint.py
 ├── dataset.py
 ├── dataset_ViT.py
-├── submit
-└── data_utils.py
+├── dataset_Swin.py
+├── floags.py
+├── inference.py
+├── inference_ensemble.py
+├── metrics.py
+├── requirements.txt
+├── requirements_2.txt
+├── scheduler.py
+├── submission.txt
+├── train.pt
+├── train_ViT.py
+├── train_swin.py
+└── utils.py
 ```
-___코드 정리 후 수정___
 
 ## Models
 
