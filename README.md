@@ -8,6 +8,7 @@
     * [Software](#Software)
     * [Dependencies](#Dependencies)
 * [Usage](#usage)
+* [Issue](#Issue)
 * [File Structure](#File-structure)
 * [Models](#Models)
     * [ASTER](#ASTER)
@@ -65,10 +66,18 @@
 ```python
 $ pip install -r requirements.txt
 ```
+## Issue
+ViT와 Swin은 는 Dependency 이슈로 인해 timm package version을 변경해야합니다.
+
+ViT Dependency
+- timm==0.4.5
+
+Swin Dependency
+- timm==0.4.9
 
 ## Usage
 
-모델을 사용하기 위해서는 ~~~ 를 실행시킵니다.
+모델을 사용하기 위해서는 다음 명령어를 실행시킵니다.
 ```bash
 $ python train.py --c your_model.yaml
 ```
@@ -127,13 +136,24 @@ p4-fr-hatting-day/code/
 
 ### ASTER
 
+<img width="406" alt="스크린샷 2021-06-14 오후 5 19 14" src="https://user-images.githubusercontent.com/52662993/121861277-a975df80-cd34-11eb-9e64-85dd16b2c8e3.png">
+
+
 ### SATRN
+
+<img width="445" alt="스크린샷 2021-06-14 오후 5 20 13" src="https://user-images.githubusercontent.com/52662993/121861565-e04bf580-cd34-11eb-9d3f-897dde58d309.png">
+
+<img width="461" alt="스크린샷 2021-06-14 오후 5 22 20" src="https://user-images.githubusercontent.com/52662993/121861772-17220b80-cd35-11eb-955a-8857858fac4b.png">
+
 
 ### ViT
 
+<img width="481" alt="스크린샷 2021-06-14 오후 5 23 34" src="https://user-images.githubusercontent.com/52662993/121861936-49336d80-cd35-11eb-85c8-875409a1df63.png">
 
 
+### Swin
 
+<img width="943" alt="스크린샷 2021-06-14 오후 5 24 11" src="https://user-images.githubusercontent.com/52662993/121861984-57818980-cd35-11eb-97e3-c1cc0a33d3f6.png">
 
 
 ## Contributors
