@@ -8,7 +8,7 @@ __pycache__/
 .idea/
 
 # no log foder
-code/log
+# code/log
 
 # submit
 code/submit
