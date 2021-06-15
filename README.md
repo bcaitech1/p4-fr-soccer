@@ -23,7 +23,11 @@
 - 2021년 05월 24일 ~ 2021년 06월 15일
 
 ## 프로젝트 overview
+### All of what we experiments
 ![last structure](https://user-images.githubusercontent.com/52662993/121977545-38303e00-cdc1-11eb-8b74-1243c8dd0c49.PNG)
+
+### Flow of what we applied
+![image](https://user-images.githubusercontent.com/57521132/122135090-d03e2e00-ce7a-11eb-8504-ce7351d4d137.png)
 
 
 
@@ -170,9 +174,23 @@ p4-fr-hatting-day/code/
 </p>
 
 ### Swin
+- 위 ViT의 Patch Partition 과정은 동일하며 Shifted Window개념이 확장되어 성능향상이 이루어진 모델입니다.
+- Swin Transformer: Hierarchical Vision Transformer using Shifted Windows (https://arxiv.org/abs/2103.14030)
 <p align="center">
 <img width="943" alt="스크린샷 2021-06-14 오후 5 24 11" src="https://user-images.githubusercontent.com/52662993/121861984-57818980-cd35-11eb-97e3-c1cc0a33d3f6.png">
 </p>
+
+
+## Data cleaning with GAN
+
+### How to use
+- Train & Test : cleaning_GAN.ipynb
+- Tutorial : CycleGAN.ipynb
+
+### Sample Results
+- Left : GAN output(Fake)  /  Right : Origin Image(Real) </br>
+![image](https://user-images.githubusercontent.com/57521132/122135608-cc5edb80-ce7b-11eb-991b-e4e77d6a5980.png)
+
 
 ## Contributors
 
