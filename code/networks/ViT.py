@@ -5,7 +5,8 @@ from torch.nn.modules.module import _IncompatibleKeys
 
 from x_transformers import *
 from x_transformers.autoregressive_wrapper import *
-from timm.models.vision_transformer import VisionTransformer
+# from timm.models.vision_transformer import VisionTransformer
+from .vision_transformer import VisionTransformer
 from timm.models.resnetv2 import ResNetV2
 from timm.models.layers import StdConv2dSame
 from einops import rearrange, repeat
