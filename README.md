@@ -23,7 +23,8 @@
 - 2021년 05월 24일 ~ 2021년 06월 15일
 
 ## 프로젝트 overview
-![overview](https://user-images.githubusercontent.com/52662993/121866863-4e46eb80-cd3a-11eb-8b8e-71f9fce6a4bd.png)
+![last structure](https://user-images.githubusercontent.com/52662993/121977545-38303e00-cdc1-11eb-8b74-1243c8dd0c49.PNG)
+
 
 
 ## 수식 인식기 프로젝트 소개
