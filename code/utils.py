@@ -1,13 +1,13 @@
 import torch.optim as optim
 from adamp import AdamP
 from networks.Attention import Attention
-# from networks.SATRN import SATRN
+from networks.SATRN import SATRN
 from networks.SATRN_3 import SATRN_3
 from networks.SATRN_4 import SATRN_4
 from networks.SATRN_adamP import SATRN_adamP
 from networks.SATRN_extension import SATRN_extension
 from networks.SATRN_Final_all import SATRN_Final_all
-# from networks.ViT import ViT
+from networks.ViT import ViT
 from networks.EFFICIENT_SATRNv6 import EFFICIENT_SATRNv6
 
 
