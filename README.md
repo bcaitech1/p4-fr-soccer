@@ -106,10 +106,8 @@ p4-fr-hatting-day/code/
 │
 ├── configs
 │    ├── Attention.yaml
-│    ├── EFFICIENT_SATRN.yaml
-│    ├── EFFICIENT_SATRNv6.yaml
 │    ├── ...
-│    └── swin.py
+│    └── EFFICIENT_SATRNv6.yaml
 ├── datatools
 │    ├── extract_tokens.py
 │    ├── parse_upstage.py
@@ -133,10 +131,14 @@ p4-fr-hatting-day/code/
 ├── requirements_2.txt
 ├── scheduler.py
 ├── submission.txt
-├── train.pt
+├── train.py
 ├── train_ViT.py
 ├── train_swin.py
 └── utils.py
+p4-fr-hatting-day/pytorch-CycleGAN-and-pix2pix/
+├── CycleGAN.ipynb # for tutorial
+├── ...
+└── cleaning_GAN.ipynb # for data cleansing
 ```
 
 ## Models
@@ -219,6 +221,9 @@ p4-fr-hatting-day/code/
 - [Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks](https://arxiv.org/abs/1703.10593)
 - [Contrastive Learning for Unpaired Image-to-Image Translation](https://arxiv.org/pdf/2007.15651.pdf)
 - [High-Performance Large-Scale Image Recognition Without Normalization](https://arxiv.org/abs/2102.06171)
+- [Attention Is All You Need](https://arxiv.org/abs/1706.03762)
+- [Swin Transformer: Hierarchical Vision Transformer using Shifted Windows](https://arxiv.org/pdf/2103.14030v1.pdf)
+- [GTC: Guided Training of CTC Towards Efficient and Accurate Scene Text Recognition](https://arxiv.org/pdf/2002.01276.pdf)
 
 ### Supported Data
 - [Aida](https://www.kaggle.com/aidapearson/ocr-data)
