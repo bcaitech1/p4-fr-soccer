@@ -48,17 +48,14 @@
 - **문장 단위 정확도**(Sentence Accuracy)(%): 정답과 정확하게 일치하는 문장 갯수 / 전체 문장 갯수
 - **단어 오류율**(Word Error Rate)(%): 삽입, 삭제, 대체가 필요한 횟수 / 전체 단어 수
 
-[최종결과](https://www.notion.so/984a90fda6ca4ca8ba485924e00d604f)
-
-# Team Repository
+## 최종 결과
+---
+- *Public Score : 0.8204 (2nd)*
+- *Private Score : 0.5956 (3rd)*
 
 ---
 
-### Github
-
-[](https://github.com/bcaitech1/p4-fr-soccer)
-
-### Log
+## Log
 
 [stage-4-soccer](https://wandb.ai/stage-4-soccer/OCR)
 
