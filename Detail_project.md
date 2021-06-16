@@ -94,8 +94,9 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 
 - 데이터 셋 특징
     - 데이터의 비율에 대한 EDA 결과(df : 원래 주어진 데이터, info : 세로 이미지 rotate한 뒤 결과)
-
-        ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%203.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%203.png)
+<p align="center">
+<img width = "481"src="Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%203.png">
+</p>
 
         - 해당 EDA를 통해 4:1 비율로 이미지를 넣어주는 것이 좋다고 생각했습니다. 확실하게 정사각형 형태로 넣어주는 것보다 좋은 성능을 보였습니다. 64:256비율과 128:512 중에 좀 더 큰 이미지를 쓰는 것이 좋다고 판단했습니다.
         - EDA를 하면서 세로의 형태의 이미지가 잘못 학습을 할 수 있을 것 같다고 생각 → 추후 가로 형태 데이터 셋 제작
@@ -165,12 +166,15 @@ We trained models on our lab's Linux cluster. The environment listed below refle
     기존 베이스라인에 Dense Block을 거친 후 Feature map을 디코더 LSTM블록
 
     기존 방식:  Conv net을 거친 feature map을 곧바로 Decoder의 hidden state와 attention
-
-    ![Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__3.51.22.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__3.51.22.png)
+    <p align="center">
+    <img width="300" height="400" src="Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__3.51.22.png">
+    </p>
 
     BLSTM 추가: Feature map을 BLSTM을 거쳐 디코더의 hidden state와 attention
-
-    ![Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__3.53.33.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__3.53.33.png)
+    <p align="center">
+    <img width="300" height="400" src="Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__3.53.33.png">
+    </p>
+    
 
     1. ConvNet을 거치며 겹치지 않은 receptive field를 BLSTM을 거치며 보완할 수 있을거라 생각했습니다
     2. 이미지를 LaTeX로 바꿀 때 한방향으로만 이미지를 읽는다면 루트, 분수를 잘 표현하지 못할것이라 생각하여 양방향 LSTM을 거치며 수식 이미지의 문맥을 인코더 feature로써 디코더에 전달하였습니다
@@ -180,8 +184,9 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 - Backbone 교체
 
     단순 CNN이었던 encoder layer를 CNN 계열 SOTA 모델인 EfficientNet v2로 교체하였습니다.
-
-    ![Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__4.20.32.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__4.20.32.png)
+    <p align="center">
+    <img height="400" src="Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__4.20.32.png">
+    </p>
 
     기존 BLSTM을 적용하여 0.6051 val score에서 0.6465로 4% 성능 향상
 
@@ -224,8 +229,9 @@ We trained models on our lab's Linux cluster. The environment listed below refle
     3. EfficientNetv2
         - EfficientNetv2의 성능이 CNN에서의 SOTA로 알려져 있어 사용하게 되었다.
         - timm 라이브러리에 적용되어 있는 Pretrained Model을 사용하였다.
-
-            ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2012.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2012.png)
+            <p align="center">
+            <img height="400" src="Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2012.png">
+            </p>
 
         - 학습 초기에는 Pretrained의 영향으로 인해 DeepCNN300보다 높은 성능을 보여주었다.
         - 학습 중간에는 갑자기 성능이 하락하는 등 불안정한 성능을 보여주었고, 최종 성능은 DeepCNN300 보다 낮았다.
@@ -264,12 +270,14 @@ We trained models on our lab's Linux cluster. The environment listed below refle
         ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2016.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2016.png)
 
     - Residual Attention : CNN에서 사용하던 Residual 방법을 Attention에도 적용할 수 있을 것 같아서 찾아보다 올해 발표된 Google RealFormer이라는 논문에서 Residual Attention을 적용한 것을 확인할 수 있었습니다. 이를 저희 Task에도 적용해보면 좋을 것 같았고, EncoderLayer에서 이전의 정보를 추가적으로 넘겨주는 Residual Attention 부분을 추가해서 모델을 개선하였습니다.
-
-        ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2017.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2017.png)
+         <p align="center">
+         <img height="400" src="Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2017.png">
+         </p>
 
     - Positional Encoder 수정
-
-        ![Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__9.06.22.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__9.06.22.png)
+        <p align="center">
+        <img height="400" src="Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__9.06.22.png">
+        </p>
 
         Adaptive 2D Positional Encoding은 이미지의 텍스트가 수직, 수평으로 정렬되어있을 때 이미지에서 어느 방향의 정보가 더 중요한지 ConvNet을 통해 스스로 학습하여 수직, 수평 방향의  중요도를 결정하게 됩니다. 
 
@@ -280,8 +288,9 @@ We trained models on our lab's Linux cluster. The environment listed below refle
         [rezero란]()?
 
         residual 연산시 학습 가능한 파라미터 $\alpha$를 통해 특정 레이어에서 중요하지 않은 파라미터들의 가중치를 조절함으로써 학습을 원활하게 동작하게 하는 방법론입니다.
-
-        ![Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-14__1.01.51.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-14__1.01.51.png)
+        <p align="center">
+        <img height="400" src="Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-14__1.01.51.png">
+        </p>
 
         Transformer의 Encoder와 Decoder의 Feed forward 함수에서 LayerNorm을 삭제한 뒤 학습 가능한 파라미터 $\alpha$를 곱해주는 방식으로 진행하였습니다.
 
@@ -289,7 +298,9 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 
     - Feed forward 수정
 
-        ![Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__5.18.27.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__5.18.27.png)
+        <p align="center">
+        <img height="400" src="Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__5.18.27.png">
+        </p>
 
         - Transformer encoder의 feedforward 레이어를 convolution으로 변경하여 이미지 세로 한줄이 아닌 문자 주변의 locality를 보며 학습을 하도록 진행하였습니다.
         - (b) Convolution 파라미터 갯수: 약 2억개
