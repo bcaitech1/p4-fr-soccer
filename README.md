@@ -75,14 +75,12 @@
 ```python
 $ pip install -r requirements.txt
 ```
-
+## Usage
 ### Attention, SATRN
 ```bash
 $ python train.py --c {your_model}.yaml
 ```
-총 2가지 모델을 선택할 수 있습니다.
-- **Attention(ASTER)**
-- **SATRN**
+
 ### Vit
 ```bash
 $ python train_ViT.py
