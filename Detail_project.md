@@ -1,13 +1,7 @@
-# Project Detail
-
----
-
 # 대회 개요
 
----
 
 ## 프로젝트 기간
-
 - 2021년 05월 24일 ~ 2021년 06월 15일
 
 ## 프로젝트 목표
@@ -15,8 +9,6 @@
 - 손글씨와 프린트된 수식 이미지를 latex 포맷의 텍스트로 변환하는 모델을 개발합니다.
 
 ## 입력 및 출력
-
----
 
 ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled.png)
 
@@ -30,8 +22,6 @@
 
 ## 데이터
 
----
-
 ### 학습 데이터
 
 - 10만장(출력물 5만장, 손글씨 5만장)
@@ -42,18 +32,15 @@
 
 ## 평가방법
 
----
-
 - 0.9 * **문장 단위 정확도** + 0.1*(1 - **단어 오류율**)
 - **문장 단위 정확도**(Sentence Accuracy)(%): 정답과 정확하게 일치하는 문장 갯수 / 전체 문장 갯수
 - **단어 오류율**(Word Error Rate)(%): 삽입, 삭제, 대체가 필요한 횟수 / 전체 단어 수
 
 ## 최종 결과
----
+
 - *Public Score : 0.8204 (2nd)*
 - *Private Score : 0.5956 (3rd)*
 
----
 
 ## Log
 
@@ -61,7 +48,6 @@
 
 # 프로젝트 방향성
 
----
 
 세부적인 Hyper Parameter조절보다 모델의 구조를 통해 성능을 끌어올리는 것으로 프로젝트의 방향성을 정했습니다.
 
@@ -73,7 +59,6 @@
 
 # Environment
 
----
 
 We trained models on our lab's Linux cluster. The environment listed below reflects a typical software / hardware configuration in this cluster.
 
@@ -93,11 +78,10 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 
 # Pipeline
 
----
 
 ### All of what we experiments
 
-![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%201.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%201.png)
+![image](https://user-images.githubusercontent.com/57521132/122161850-6be89200-cead-11eb-99c4-a5a3407c42bf.png)
 
 ### Flow of what we applied
 
@@ -105,7 +89,6 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 
 ## 데이터
 
----
 
 ### EDA
 
@@ -174,8 +157,6 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 - 참고자료
 
 ## 모델링
-
----
 
 ### ASTER
 
@@ -368,8 +349,6 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 
 ## Loss
 
----
-
 ### CrossEnropy Loss
 
 - CrossEnropy Loss
@@ -414,7 +393,6 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 
 ## Future Work
 
----
 
 - Albumentations를 통한 augmentation → 라이브러리 충돌로 인해서 사용 불가
 - Swin Transformer에 대해 섬세한 실험.
@@ -437,7 +415,6 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 
 # Reference
 
----
 
 - RealFormer: Transformer Likes Residual Attention ([https://arxiv.org/pdf/2012.11747.pdf](https://arxiv.org/pdf/2012.11747.pdf))
 - On Recognizing Texts of Arbitrary Shapes with 2D Self-Attention ([https://arxiv.org/pdf/1910.04396v1.pdf](https://arxiv.org/pdf/1910.04396v1.pdf))
