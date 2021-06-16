@@ -167,8 +167,8 @@ p4-fr-hatting-day/code/
 
 
 ### ViT
-- 이미지를 patch로 나누어 하나의 시퀀스로 취급하여 transformer를 통해 학습하는 모델입니다.
-- 
+- 이미지를 patch로 나누어 하나의 시퀀스로 transformer를 통해 학습하는 모델입니다.
+- An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale (https://arxiv.org/abs/2010.11929)
 <p align="center">
 <img width="481" alt="스크린샷 2021-06-14 오후 5 23 34" src="https://user-images.githubusercontent.com/52662993/121861936-49336d80-cd35-11eb-85c8-875409a1df63.png">
 </p>
