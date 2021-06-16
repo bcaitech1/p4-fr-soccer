@@ -98,24 +98,25 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 <img width = "481"src="Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%203.png">
 </p>
 
-        - 해당 EDA를 통해 4:1 비율로 이미지를 넣어주는 것이 좋다고 생각했습니다. 확실하게 정사각형 형태로 넣어주는 것보다 좋은 성능을 보였습니다. 64:256비율과 128:512 중에 좀 더 큰 이미지를 쓰는 것이 좋다고 판단했습니다.
-        - EDA를 하면서 세로의 형태의 이미지가 잘못 학습을 할 수 있을 것 같다고 생각 → 추후 가로 형태 데이터 셋 제작
+- 해당 EDA를 통해 4:1 비율로 이미지를 넣어주는 것이 좋다고 생각했습니다. 확실하게 정사각형 형태로 넣어주는 것보다 좋은 성능을 보였습니다. 64:256비율과 128:512 중에 좀 더 큰 이미지를 쓰는 것이 좋다고 판단했습니다.
+- EDA를 하면서 세로의 형태의 이미지가 잘못 학습을 할 수 있을 것 같다고 생각 → 추후 가로 형태 데이터 셋 제작
+- 손 글씨의 경우, 검은 색 볼펜 이외에도 다양한 색상의 볼펜, 형광펜을 사용하는 경우가 있었습니다 → gray scale로 변경해서 글씨에 집중하도록 수정
+- 뒤집었을 때, 출력하는 결과가 달라지는 경우도 존재했습니다. 0+1을 뒤집었을 때, 1+0으로 결과를 prediction하게 되었을 때, loss가 크게 형성될 것이라고 생각했습니다. → rotate는 적용하지 않는 것이 좋다고 판단. 실제로 rotate를 180도 적용한 경우 validation 기준으로 0.05 가량 차이 존재.
 
-    - 손 글씨의 경우, 검은 색 볼펜 이외에도 다양한 색상의 볼펜, 형광펜을 사용하는 경우가 있었습니다 → gray scale로 변경해서 글씨에 집중하도록 수정
+    ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%204.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%204.png)
 
-    - 뒤집었을 때, 출력하는 결과가 달라지는 경우도 존재했습니다. 0+1을 뒤집었을 때, 1+0으로 결과를 prediction하게 되었을 때, loss가 크게 형성될 것이라고 생각했습니다. → rotate는 적용하지 않는 것이 좋다고 판단. 실제로 rotate를 180도 적용한 경우 validation 기준으로 0.05 가량 차이 존재.
+실제 인퍼런스 결과 → 하지만 이를 변경해주기는 어렵다고 판단. Data noise로 생각하기로 했습니다.
 
-        ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%204.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%204.png)
+<p align="center">
+<img width = "481"src="Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%205.png">
+</p>
 
-        실제 인퍼런스 결과 → 하지만 이를 변경해주기는 어렵다고 판단. Data noise로 생각하기로 했습니다.
 
-        ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%205.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%205.png)
+- width보다 height가 긴 이미지 약 2400장 중 1700장은 세로 형태 이미지 → 가로 형태로 임의로 90도 회전시키고 rotation 180을 줬으나 성능 0.04가량 하락 → 1700장에 대해 올바르게 학습하도록 dataset set 수정 →  public에서 0.01정도 성능 향상
 
-    - width보다 height가 긴 이미지 약 2400장 중 1700장은 세로 형태 이미지 → 가로 형태로 임의로 90도 회전시키고 rotation 180을 줬으나 성능 0.04가량 하락 → 1700장에 대해 올바르게 학습하도록 dataset set 수정 →  public에서 0.01정도 성능 향상
+  ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%206.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%206.png)
 
-        ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%206.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%206.png)
-
-    - resize하는 연산이 학습 속도에 영향을 준다고 판단 → 최종으로 사용할 4:1 형태인 128:512 사이즈로 resize → 학습 속도 향상
+- resize하는 연산이 학습 속도에 영향을 준다고 판단 → 최종으로 사용할 4:1 형태인 128:512 사이즈로 resize → 학습 속도 향상
 
 ### 데이터 전처리
 
@@ -259,7 +260,15 @@ We trained models on our lab's Linux cluster. The environment listed below refle
             - NFnet의 논문에서는 Normalization을 없애는 대신에 다양한 요소들을 통해 이를 보완했다. 그렇지만 현재 많은 실험들이 진행되어진 상태에서 이러한 요소들을 적용하기에는 이미 실험되어진 요소들을 다시 검증하는 과정을 거쳐야 하기에 무리가 있었다.
             - Parameter의 관점에서 ResnetRS 152와 비교를 해보았다.
 
-                [Params](https://www.notion.so/84b770e963b044328d4e59ac31a84c7e)
+                | Model | Params Num |
+                | -------- | -------- |
+                | ResnetRS 152     | 84,572,576     |
+                | ResnetRS 200 | 91,160,992 |
+                | NFnet F0     | 68,371,360    |
+                | NFnet F1 | 129,478,560 |
+                | NFnet F2    | 190,585,760     |
+
+
 
             - 위 표의 내용을 통해 현재 구성되어진 Transformer 구조에서는 80,000,000~100,000,000 Params를 가진 CNN Block이랑 합이 맞는 모습을 보인다고 판단이 되었다.
             - 따라서 NFnet또한 실험군에서 제외되었다.
