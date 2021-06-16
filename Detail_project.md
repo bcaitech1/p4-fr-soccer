@@ -294,7 +294,7 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 
     - Rezero 적용
 
-        [rezero란]()?
+        [rezero란](https://arxiv.org/abs/2003.04887)?
 
         residual 연산시 학습 가능한 파라미터 $\alpha$를 통해 특정 레이어에서 중요하지 않은 파라미터들의 가중치를 조절함으로써 학습을 원활하게 동작하게 하는 방법론입니다.
         <p align="center">
