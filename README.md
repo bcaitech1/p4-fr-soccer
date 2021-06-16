@@ -29,7 +29,8 @@
 ### Flow of what we applied
 ![image](https://user-images.githubusercontent.com/57521132/122135090-d03e2e00-ce7a-11eb-8504-ce7351d4d137.png)
 
-
+### More Details
+[Project Details](https://arxiv.org/abs/2102.06171)
 
 ## 수식 인식기 프로젝트 소개
 ![formular](https://user-images.githubusercontent.com/52662993/121814480-48a2c480-ccac-11eb-8201-96eed32a245b.png)
@@ -205,7 +206,7 @@ p4-fr-hatting-day/pytorch-CycleGAN-and-pix2pix/
 
 
 
-## [Reference]
+## Reference
 
 
 
