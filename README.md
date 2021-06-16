@@ -20,7 +20,7 @@
 
 
 ## 프로젝트 기간
-- 2021년 05월 24일 ~ 2021년 06월 15일
+- 2021년 05월 24일 ~ 06월 15일(4 weeks)
 
 ## 프로젝트 overview
 ### All of what we experiments
