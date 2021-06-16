@@ -10,7 +10,7 @@
 
 ## 입력 및 출력
 
-![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled.png)
+![Project%20Detail/Untitled.png](Project%20Detail/Untitled.png)
 
 ### 입력
 
@@ -85,7 +85,7 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 
 ### Flow of what we applied
 
-![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%202.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%202.png)
+![Project%20Detail/Untitled%202.png](Project%20Detail/Untitled%202.png)
 
 ## 데이터
 
@@ -95,7 +95,7 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 - 데이터 셋 특징
     - 데이터의 비율에 대한 EDA 결과(df : 원래 주어진 데이터, info : 세로 이미지 rotate한 뒤 결과)
 <p align="center">
-<img width = "481"src="Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%203.png">
+<img width = "481"src="Project%20Detail/Untitled%203.png">
 </p>
 
 - 해당 EDA를 통해 4:1 비율로 이미지를 넣어주는 것이 좋다고 생각했습니다. 확실하게 정사각형 형태로 넣어주는 것보다 좋은 성능을 보였습니다. 64:256비율과 128:512 중에 좀 더 큰 이미지를 쓰는 것이 좋다고 판단했습니다.
@@ -103,18 +103,18 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 - 손 글씨의 경우, 검은 색 볼펜 이외에도 다양한 색상의 볼펜, 형광펜을 사용하는 경우가 있었습니다 → gray scale로 변경해서 글씨에 집중하도록 수정
 - 뒤집었을 때, 출력하는 결과가 달라지는 경우도 존재했습니다. 0+1을 뒤집었을 때, 1+0으로 결과를 prediction하게 되었을 때, loss가 크게 형성될 것이라고 생각했습니다. → rotate는 적용하지 않는 것이 좋다고 판단. 실제로 rotate를 180도 적용한 경우 validation 기준으로 0.05 가량 차이 존재.
 
-    ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%204.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%204.png)
+    ![Project%20Detail/Untitled%204.png](Project%20Detail/Untitled%204.png)
 
 실제 인퍼런스 결과 → 하지만 이를 변경해주기는 어렵다고 판단. Data noise로 생각하기로 했습니다.
 
 <p align="center">
-<img width = "481"src="Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%205.png">
+<img width = "481"src="Project%20Detail/Untitled%205.png">
 </p>
 
 
 - width보다 height가 긴 이미지 약 2400장 중 1700장은 세로 형태 이미지 → 가로 형태로 임의로 90도 회전시키고 rotation 180을 줬으나 성능 0.04가량 하락 → 1700장에 대해 올바르게 학습하도록 dataset set 수정 →  public에서 0.01정도 성능 향상
 
-  ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%206.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%206.png)
+  ![Project%20Detail/Untitled%206.png](Project%20Detail/Untitled%206.png)
 
 - resize하는 연산이 학습 속도에 영향을 준다고 판단 → 최종으로 사용할 4:1 형태인 128:512 사이즈로 resize → 학습 속도 향상
 
@@ -130,11 +130,11 @@ We trained models on our lab's Linux cluster. The environment listed below refle
     - 큰 효과가 없었기에 CLAHE의 과정을 깊게 보았고, train dataset의 길이에 맞추어 동적으로 Grid size가 적용되도록 수정하여 조금더 개선했다.
     - 하지만 음영이 어느정도 강하게 들어있는 data들에 대해서는 문제점이 계속 발생했다.
 
-        ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%207.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%207.png)
+        ![Project%20Detail/Untitled%207.png](Project%20Detail/Untitled%207.png)
 
     - 이미지의 한쪽 부분들이 어두운 음영을 가지고 있을때에 위와 같은 현상이 더 발생하고 threshold의 과정에서 이러한 문제점이 생길 것 같다는 판단 → image size에 대해 동적으로 white padding을 적용해 주면 어떨까? → 아래의 결과
 
-        ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%208.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%208.png)
+        ![Project%20Detail/Untitled%208.png](Project%20Detail/Untitled%208.png)
 
     - 위 cleaning data를 B, origin data를 A로 주어 Cycle GAN, CUT(Contrastive Unpaired Translation), FastCUT을 학습
         - CycleGAN result
@@ -168,12 +168,12 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 
     기존 방식:  Conv net을 거친 feature map을 곧바로 Decoder의 hidden state와 attention
     <p align="center">
-    <img width="300" height="400" src="Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__3.51.22.png">
+    <img width="300" height="400" src="Project%20Detail/_2021-06-13__3.51.22.png">
     </p>
 
     BLSTM 추가: Feature map을 BLSTM을 거쳐 디코더의 hidden state와 attention
     <p align="center">
-    <img width="300" height="400" src="Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__3.53.33.png">
+    <img width="300" height="400" src="Project%20Detail/_2021-06-13__3.53.33.png">
     </p>
     
 
@@ -186,7 +186,7 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 
     단순 CNN이었던 encoder layer를 CNN 계열 SOTA 모델인 EfficientNet v2로 교체하였습니다.
     <p align="center">
-    <img height="400" src="Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__4.20.32.png">
+    <img height="400" src="Project%20Detail/_2021-06-13__4.20.32.png">
     </p>
 
     기존 BLSTM을 적용하여 0.6051 val score에서 0.6465로 4% 성능 향상
@@ -199,14 +199,14 @@ We trained models on our lab's Linux cluster. The environment listed below refle
     2. Xavier
         - pytorch 1.4.0 github의 transformer([https://github.com/pytorch/pytorch/blob/v1.4/torch/nn/modules/transformer.py](https://github.com/pytorch/pytorch/blob/v1.4/torch/nn/modules/transformer.py))의 initial weight가 xavier_uniform으로 되어있고, 다양한 transformer참고 자료에도 xavier initialize를 사용하는 점을 참고하여 실험을 진행.
 
-            ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%209.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%209.png)
+            ![Project%20Detail/Untitled%209.png](Project%20Detail/Untitled%209.png)
 
         - 기존(검은색)에 비해 크게 낮은 성능을 보여주었고, 이를 보완해주기 위해 LR을 높여주거나 Corssentropy with ignore_index를 적용해도 저조한 성능을 보였다.
         - CNN block에서 여러 RELU를 거친 Feature가 transformer input으로 들어가게 되고,  Xavier initialize의 RELU에서의 문제점을 Kaiming initialize에서 개선해주는 점들이 맞물려 Xavier가 낮은 성능을 보이는 것 같다.
     3. Custom
         - RealFormer(Residual Attention)을 적용하다가 다른 Initialize를 보게되었고, 이를 model에 적용. ([https://github.com/cloneofsimo/RealFormer-pytorch/blob/main/models.py](https://github.com/cloneofsimo/RealFormer-pytorch/blob/main/models.py))
 
-            ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2010.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2010.png)
+            ![Project%20Detail/Untitled%2010.png](Project%20Detail/Untitled%2010.png)
 
         - Train/Val Score/Loss가 모두 적용전보다 향상된 성능을 보였고, 최종 model에도 적용.
 - CNN Block
@@ -223,7 +223,7 @@ We trained models on our lab's Linux cluster. The environment listed below refle
     2. DenseNet
         - 위 DeepCNN300이 custom Densenet으로 구성이 되었기에 Pretrained를 사용하면 어떨까? 하는 생각으로 실험이 진행되었다.
 
-            ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2011.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2011.png)
+            ![Project%20Detail/Untitled%2011.png](Project%20Detail/Untitled%2011.png)
 
         - Pretrain Model을 사용하는 것이 더 좋은 성능을 보였다.
 
@@ -231,13 +231,13 @@ We trained models on our lab's Linux cluster. The environment listed below refle
         - EfficientNetv2의 성능이 CNN에서의 SOTA로 알려져 있어 사용하게 되었다.
         - timm 라이브러리에 적용되어 있는 Pretrained Model을 사용하였다.
             <p align="center">
-            <img height="400" src="Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2012.png">
+            <img height="400" src="Project%20Detail/Untitled%2012.png">
             </p>
 
         - 학습 초기에는 Pretrained의 영향으로 인해 DeepCNN300보다 높은 성능을 보여주었다.
         - 학습 중간에는 갑자기 성능이 하락하는 등 불안정한 성능을 보여주었고, 최종 성능은 DeepCNN300 보다 낮았다.
 
-            ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2013.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2013.png)
+            ![Project%20Detail/Untitled%2013.png](Project%20Detail/Untitled%2013.png)
 
         - 기존보다 성능은 감소하였으나, 학습이 전반적으로 잘 진행되는 추이를 보여주었고, 하이퍼파라미터를 변경하지 않고 단순히 네트워크만 변경해준 결과이기 때문에 모델의 다양성을 위해 EfficientNetv2을 계속 사용하였다.
 
@@ -248,12 +248,12 @@ We trained models on our lab's Linux cluster. The environment listed below refle
         - 270, 350 또한 256*256으로 논문에서는 실험이 되었지만 많은 Parameter를 가져 GPU Out Of Memory Error를 보였고, Batchsize를 줄여 이를 해결하게 되더라도 훨씬 오랜 학습시간을 가져야 했기에 실험군에서 제외했다.
         - ResnetRS152, ResnetRS200을 실제로 학습시에 큰 성능향상이 있었고, ResnetRS200은 152에 비해 더 많은 학습시간을 가졌지만 성능은 크게 차이가 없었기에 이후 실험들은 ResnetRS152를 CNN Block으로 가지고 진행되었다.
 
-            ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2014.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2014.png)
+            ![Project%20Detail/Untitled%2014.png](Project%20Detail/Untitled%2014.png)
 
     5. NFnet
         - 현재 Imagenet에서 높은 성능을 보이고있는 NFnet에 대한 실험 또한 이루어졌다.
 
-            ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2015.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2015.png)
+            ![Project%20Detail/Untitled%2015.png](Project%20Detail/Untitled%2015.png)
 
         - 학습 초기에는 큰 성능을 보이다가 중반부를 다가설때 쯔음 성능이 감소하는 현상을 보였다. Accuracy만 감소하는 것이 아니라 Loss또한 같이 증가하는 현상을 보였다.
         - 왜 그럴까?
@@ -276,16 +276,16 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 - Encoder
     - QKV sharing : SATRN 학습시간이 오래 걸려 학습 속도 향상을 위해 baseline 확인 중 Query, Key, Value EncoderLayer 부분에서 각각 input으로 들어가고 있어 이를 qkv로 묶어주는 작업을 진행했습니다. 성능, 속도 면에서 미세하게 향상이 있었습니다.
 
-        ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2016.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2016.png)
+        ![Project%20Detail/Untitled%2016.png](Project%20Detail/Untitled%2016.png)
 
     - Residual Attention : CNN에서 사용하던 Residual 방법을 Attention에도 적용할 수 있을 것 같아서 찾아보다 올해 발표된 Google RealFormer이라는 논문에서 Residual Attention을 적용한 것을 확인할 수 있었습니다. 이를 저희 Task에도 적용해보면 좋을 것 같았고, EncoderLayer에서 이전의 정보를 추가적으로 넘겨주는 Residual Attention 부분을 추가해서 모델을 개선하였습니다.
          <p align="center">
-         <img height="400" src="Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2017.png">
+         <img height="400" src="Project%20Detail/Untitled%2017.png">
          </p>
 
     - Positional Encoder 수정
         <p align="center">
-        <img height="400" src="Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__9.06.22.png">
+        <img height="400" src="Project%20Detail/_2021-06-13__9.06.22.png">
         </p>
 
         Adaptive 2D Positional Encoding은 이미지의 텍스트가 수직, 수평으로 정렬되어있을 때 이미지에서 어느 방향의 정보가 더 중요한지 ConvNet을 통해 스스로 학습하여 수직, 수평 방향의  중요도를 결정하게 됩니다. 
@@ -298,17 +298,17 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 
         residual 연산시 학습 가능한 파라미터 $\alpha$를 통해 특정 레이어에서 중요하지 않은 파라미터들의 가중치를 조절함으로써 학습을 원활하게 동작하게 하는 방법론입니다.
         <p align="center">
-        <img height="400" src="Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-14__1.01.51.png">
+        <img height="400" src="Project%20Detail/_2021-06-14__1.01.51.png">
         </p>
 
         Transformer의 Encoder와 Decoder의 Feed forward 함수에서 LayerNorm을 삭제한 뒤 학습 가능한 파라미터 $\alpha$를 곱해주는 방식으로 진행하였습니다.
 
-        ![Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-14__1.11.32.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-14__1.11.32.png)
+        ![Project%20Detail/_2021-06-14__1.11.32.png](Project%20Detail/_2021-06-14__1.11.32.png)
 
     - Feed forward 수정
 
         <p align="center">
-        <img height="400" src="Project%20Detail%20165baa05d74043038a63417017e3a77d/_2021-06-13__5.18.27.png">
+        <img height="400" src="Project%20Detail/_2021-06-13__5.18.27.png">
         </p>
 
         - Transformer encoder의 feedforward 레이어를 convolution으로 변경하여 이미지 세로 한줄이 아닌 문자 주변의 locality를 보며 학습을 하도록 진행하였습니다.
@@ -321,7 +321,7 @@ We trained models on our lab's Linux cluster. The environment listed below refle
     - decoder layer하나에 attention이 2번 진행되어지도록 구성되어져있고, first attention의 out이 다음 second attention의 input으로 들어가도록 구성이 되어지는것이 일반적이지만, baseline에서 실수로인해 first attention의 input과 second attention의 input이 같은 input이 적용하도록 되어 2 branch구조를 띄게 구성되어있었다.
     - 이를 수정하여 원 의도대로 이어진 구조로 만들어 실험을 진행하였다.
 
-        ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2018.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2018.png)
+        ![Project%20Detail/Untitled%2018.png](Project%20Detail/Untitled%2018.png)
 
     - 초중반에 학습이 차이가 났지만, 수렴지점은 비슷한 모습을 보였다.
     - 구조가 다르더라도, 현재 model에서 decoder 가 상대적으로 다른 layer들에 비해 얕게 구성되어져있으며 수정 전,후가 비슷한 맥락으로 forward가 진행되어지는 구조이기에 큰 변화는 없었던 것 같다.
@@ -333,7 +333,7 @@ We trained models on our lab's Linux cluster. The environment listed below refle
     2. Leaky RELU
         - ASTER로 실험이 진행되었다.
 
-            ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2019.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2019.png)
+            ![Project%20Detail/Untitled%2019.png](Project%20Detail/Untitled%2019.png)
 
         - LeakyRELU를 적용했을때에 더 안좋은 성능을 보였다.
             - 왜그럴까?
@@ -342,7 +342,7 @@ We trained models on our lab's Linux cluster. The environment listed below refle
     3. GELU
         - 조금 더 섬세한 비교를 위해 SATRN으로 진행되었다.
 
-            ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2020.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2020.png)
+            ![Project%20Detail/Untitled%2020.png](Project%20Detail/Untitled%2020.png)
 
         - 위의 Leaky RELU의 경우처럼 성능이 좋지않았다.
         - 이에 대한 이유 또한 위의 Leaky RELU와 비슷하다고 판단이 되었다.
@@ -375,7 +375,7 @@ We trained models on our lab's Linux cluster. The environment listed below refle
     - Ignore index = False vs True
         - 초기에는 월등히 좋은 성능을 보이다가 어느 순간 성능이 급격하게 떨어졌다
 
-            ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2021.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2021.png)
+            ![Project%20Detail/Untitled%2021.png](Project%20Detail/Untitled%2021.png)
 
         - Log를 통해 결과를 확인해보니, ignore_index에 PAD Token이 적용되기에 PAD자리가 단순히 EOS로 대체가 되어지거나, 예측 중간에 PAD가 나올경우 계산이 끊기는 현상이 발생했다.
         - 이를 수정하기에 너무많은 변수들이 발생할 것 같은 위험과 다른 여러 실험들에 더 흥미가 있었기에 Ignore_index는 사용하지 않는 방향으로 실험이 진행되었다.
@@ -387,7 +387,7 @@ We trained models on our lab's Linux cluster. The environment listed below refle
 
          → 적용전에 비해 낮은 성능
 
-        ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2022.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2022.png)
+        ![Project%20Detail/Untitled%2022.png](Project%20Detail/Untitled%2022.png)
 
     - Train Data가 8만개의 적지않은 양과, Augmentation이 natural하게 들어있고 Layer norm, Batch Norm또한 많이 들어있어 이미 다양한 Generalize가 적용되어있었기에 Label Smoothing을 적용하게되면 오히려 성능이 그대로 감소하게 되는 효과를 보인 것 같다.
 
@@ -397,7 +397,7 @@ We trained models on our lab's Linux cluster. The environment listed below refle
     - SATRN 학습시간이 45시간, ASTER 학습시간이 5시간이기에 Focal Loss, Cosine Loss 실험은 ASTER로 진행했다.
     - Kaggle의 여러 Discussion을 읽어보던 중, Cosine+Focal Loss관련 내용이 있었다.([https://www.kaggle.com/c/cassava-leaf-disease-classification/discussion/203271](https://www.kaggle.com/c/cassava-leaf-disease-classification/discussion/203271))
 
-        ![Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2023.png](Project%20Detail%20165baa05d74043038a63417017e3a77d/Untitled%2023.png)
+        ![Project%20Detail/Untitled%2023.png](Project%20Detail/Untitled%2023.png)
 
     - CosineEmbeddingLoss를 통해 Pred, Target Sentence전체에 대한 Loss계산이 이루어지기에 token마다 분류해주는 CrossEntropy Loss보다 조금더 Sentence에 초점을 맞출수 있을 것 같다는 판단으로 더 좋은 성능이 나오지 않을까 하는 기대와 함께 실험을 진행했다.
     - Weight 비율을 여러 방향으로 조절하며 다양한 방향으로 실험을 진행했지만 낮은 성능이 나왔다.
